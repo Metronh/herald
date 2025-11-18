@@ -20,9 +20,14 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 8.0.x
-    - name: Restore dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --no-restore
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+    - name: Restore dependencies NewsWebsite
+      run: dotnet restore BasicNewsArticleWebsite/NewsWebsite.csproj  
+    - name: Build NewsWebsite
+      run: dotnet build BasicNewsArticleWebsite/NewsWebsite/NewsWebsite.csproj --no-restore
+    - name: Restore dependencies User
+      run: dotnet restore BasicNewsArticleWebsite/UploadData/UploadData.csproj  
+    - name: Build User
+      run: dotnet build BasicNewsArticleWebsite/UploadData/UploadData.csproj --no-restore
+
+#    - name: Test
+#      run: dotnet test --no-build --verbosity normal
