@@ -2,7 +2,7 @@ using System.Data;
 using Microsoft.Extensions.Options;
 using Npgsql;
 using UploadData.AppSettings;
-using UploadData.Database.Interfaces;
+using UploadData.Interfaces.Database;
 
 namespace UploadData.Database.Implementations;
 

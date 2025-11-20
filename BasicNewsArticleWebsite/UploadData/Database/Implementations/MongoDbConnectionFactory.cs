@@ -1,7 +1,7 @@
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using UploadData.AppSettings;
-using UploadData.Database.Interfaces;
+using UploadData.Interfaces.Database;
 using UploadData.Models;
 
 namespace UploadData.Database.Implementations;

@@ -1,6 +1,4 @@
-using UploadData.Models;
-
-namespace UploadData.Interfaces.Services;
+namespace UploadData.Interfaces.Helpers;
 
 public interface IReadCsvHelper <T>
 {

@@ -1,8 +1,8 @@
 using UploadData.AppSettings;
 using UploadData.Database;
 using UploadData.Database.Implementations;
-using UploadData.Database.Interfaces;
 using UploadData.Endpoints;
+using UploadData.Interfaces.Database;
 using UploadData.Interfaces.Repository;
 using UploadData.Interfaces.Services;
 using UploadData.Repository;

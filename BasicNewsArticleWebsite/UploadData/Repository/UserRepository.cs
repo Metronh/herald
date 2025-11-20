@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using UploadData.AppSettings;
 using UploadData.Database;
-using UploadData.Database.Interfaces;
+using UploadData.Interfaces.Database;
 
 namespace UploadData.Repository;
 
