@@ -1,3 +1,4 @@
+using System.Net;
 using Microsoft.AspNetCore.Http.HttpResults;
 using UploadData.Interfaces;
 using UploadData.Interfaces.Services;
@@ -8,19 +9,21 @@ public static class UploadEndpoints
 {
     public static void AddUploadEndpoints(this WebApplication app)
     {
-        app.MapGet("/UploadArticles", UploadArticles).WithOpenApi();
-        app.MapGet("/UploadUsers",UploadUsers).WithOpenApi();
+        app.MapGet("/SetUpProject",SetUpProject).WithOpenApi();
     }
+    
 
-    private static async Task<Results<Ok, ProblemHttpResult>> UploadArticles(IUploadService uploadService)
+    private static async Task<Results<Ok, ProblemHttpResult>> SetUpProject(IUploadService uploadService)
     {
-        await uploadService.UploadArticles();
-        throw new NotImplementedException();
-    }
-
-    private static async Task<Results<Ok, ProblemHttpResult>> UploadUsers(IUploadService uploadService)
-    {
-        await uploadService.UploadUsers();
-        throw new NotImplementedException();
+        try
+        {
+            await Task.WhenAll(uploadService.UploadUsers(),uploadService.UploadArticles());
+            return TypedResults.Ok();
+        }
+        catch
+        {
+            Console.WriteLine("Error here");
+            return TypedResults.Problem(statusCode:404);
+        }
     }
 }

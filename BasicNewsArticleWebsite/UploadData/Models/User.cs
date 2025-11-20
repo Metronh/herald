@@ -9,5 +9,5 @@ public record User
     [Name("first_name")] public required string FirstName { get; init; }
     [Name("last_name")] public required string LastName { get; init; }
     [Name("password")] public required string Password { get; init; }
-    [Ignore] public required Guid Guid { get; init; } = Guid.NewGuid();
+    [Ignore] public required Guid Id { get; init; } = Guid.NewGuid();
 }
