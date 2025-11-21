@@ -23,7 +23,7 @@ jobs:
     - name: Restore dependencies User
       run: dotnet restore Backend/UploadData/UploadData.csproj  
     - name: Build User
-      run: dotnet build BasicNewsArticleWebsite/UploadData/UploadData.csproj --no-restore
+      run: dotnet build Backend/UploadData/UploadData.csproj --no-restore
 
 #    - name: Test
 #      run: dotnet test --no-build --verbosity normal
