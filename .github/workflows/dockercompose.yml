@@ -1,0 +1,22 @@
+name: Docker Compose
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - name: Run docker compose
+              uses: hoverkraft-tech/compose-action@3846bcd61da338e9eaaf83e7ed0234a12b099b72 
+              with: 
+                compose-file: "compose.yaml"
+                up-flags: "--build"
+                down-flags: "-v"
+
+
+
