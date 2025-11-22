@@ -1,4 +1,6 @@
+using System.Diagnostics;
 using Dapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using UploadData.AppSettings;
 using UploadData.Database;
@@ -15,9 +17,9 @@ public class UploadService : IUploadService
 {
     private readonly IUserRepository _userRepository;
     private readonly CsvLocations _csvLocations;
-    
 
-    public UploadService(IOptions<CsvLocations> csvLocation ,IUserRepository userRepository)
+
+    public UploadService(IOptions<CsvLocations> csvLocation, IUserRepository userRepository)
     {
         _userRepository = userRepository;
         _csvLocations = csvLocation.Value;
@@ -34,6 +36,11 @@ public class UploadService : IUploadService
     {
         IReadCsvHelper<User> readCsvHelper = new ReadCsvHelper<User>();
         List<User> users = readCsvHelper.GetItemsFromCsv(_csvLocations.UsersCsv);
+        var passwordHasher = new PasswordHasher<User>();
+        
+        Parallel.ForEach(users,
+            user => user.Password = passwordHasher.HashPassword(user: user, password: user.Password));
+
         foreach (var user in users)
         {
             await _userRepository.UploadUser(user: user);
