@@ -21,9 +21,9 @@ jobs:
       with:
         dotnet-version: 8.0.x
     - name: Restore dependencies User
-      run: dotnet restore SetUp/UploadData/UploadData.csproj  
+      run: dotnet restore Setup/UploadData/UploadData.csproj  
     - name: Build User
-      run: dotnet build SetUp/UploadData/UploadData.csproj --no-restore
+      run: dotnet build Setup/UploadData/UploadData.csproj --no-restore
 
 #    - name: Test
 #      run: dotnet test --no-build --verbosity normal
