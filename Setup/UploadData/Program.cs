@@ -24,7 +24,7 @@ builder.Services.AddSingleton<IMongoDbConnectionFactory, MongoDbConnectionFactor
 
 
 var app = builder.Build();
-app.ConfigureExceptionHandler();
+app.ConfigureCustomExceptionMiddleware();
 app.UseHttpsRedirection();
 
 // Configure the HTTP request pipeline.
