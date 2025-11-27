@@ -22,33 +22,17 @@ public class UserRepository : IUserRepository
 
     public async Task UploadUser(User user)
     {
-        try
-        {
-            using var dbConnection = await _dbConnectionFactory.CreateConnectionAsync();
-            await dbConnection.ExecuteAsync("""
-                                            INSERT INTO users (Id, Username, Email, FirstName, LastName, Password) 
-                                            VALUES 
-                                                (@Id, @Username, @Email, @FirstName, @LastName, @Password)
-                                            """, user);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            throw;
-        }
+        using var dbConnection = await _dbConnectionFactory.CreateConnectionAsync();
+        await dbConnection.ExecuteAsync("""
+                                        INSERT INTO users (Id, Username, Email, FirstName, LastName, Password) 
+                                        VALUES 
+                                            (@Id, @Username, @Email, @FirstName, @LastName, @Password)
+                                        """, user);
     }
 
     public async Task UploadArticles(List<Article> articles)
     {
-        try
-        {
-            var collection = _mongoDbConnectionFactory.GetCollection();
-                await collection.InsertManyAsync(articles);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e.Message);
-            throw;
-        }
+        var collection = _mongoDbConnectionFactory.GetCollection();
+        await collection.InsertManyAsync(articles);
     }
 }

@@ -15,15 +15,8 @@ public static class UploadEndpoints
 
     private static async Task<Results<Ok, ProblemHttpResult>> SetUpProject(IUploadService uploadService)
     {
-        try
-        {
+            
             await Task.WhenAll(uploadService.UploadUsers(),uploadService.UploadArticles());
             return TypedResults.Ok();
-        }
-        catch
-        {
-            Console.WriteLine("Error here");
-            return TypedResults.Problem(statusCode:404);
-        }
     }
 }

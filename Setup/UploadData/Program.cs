@@ -2,6 +2,7 @@ using UploadData.AppSettings;
 using UploadData.Database;
 using UploadData.Database.Implementations;
 using UploadData.Endpoints;
+using UploadData.Extensions;
 using UploadData.Interfaces.Database;
 using UploadData.Interfaces.Repository;
 using UploadData.Interfaces.Services;
@@ -21,9 +22,13 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IDbConnectionFactory, NpgsqlDbConnectionFactory>();
 builder.Services.AddSingleton<IMongoDbConnectionFactory, MongoDbConnectionFactory>();
 
+
 var app = builder.Build();
+app.ConfigureExceptionHandler();
+app.UseHttpsRedirection();
 
 // Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -32,7 +37,5 @@ if (app.Environment.IsDevelopment())
 
 /* Adding Endpoints here */
 app.AddUploadEndpoints();
-
-app.UseHttpsRedirection();
 
 app.Run();
