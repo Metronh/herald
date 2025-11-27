@@ -1,7 +1,3 @@
-using System.Net;
-using System.Text.Json;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using UploadData.Middleware;
 
 namespace UploadData.Extensions;
