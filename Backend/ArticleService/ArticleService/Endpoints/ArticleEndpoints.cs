@@ -16,30 +16,14 @@ public static class ArticleEndpoints
     private static async Task<Results<Ok<List<ArticleResponse>>, ProblemHttpResult>> GetArticle(
         GetArticlesByTitleRequest request, IArticlesService articlesService)
     {
-        try
-        {
-            var result = await articlesService.GetArticleByTitle(request: request);
-            return TypedResults.Ok(result);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return TypedResults.Problem(statusCode:500);
-        }
+        var result = await articlesService.GetArticleByTitle(request: request);
+        return TypedResults.Ok(result);
     }
 
     private static async Task<Results<Ok, ProblemHttpResult>> CreateArticle(CreatArticleRequest request,
         IArticlesService articlesService)
     {
-        try
-        {
-            await articlesService.CreateArticle(request: request);
-            return TypedResults.Ok();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-            return TypedResults.Problem(statusCode: 500);
-        }
+        await articlesService.CreateArticle(request: request);
+        return TypedResults.Ok();
     }
 }

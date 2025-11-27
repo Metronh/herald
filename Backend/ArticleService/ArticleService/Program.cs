@@ -1,6 +1,7 @@
 using ArticleService.AppSettings;
 using ArticleService.Database;
 using ArticleService.Endpoints;
+using ArticleService.Extensions;
 using ArticleService.Interfaces.Database;
 using ArticleService.Interfaces.Services;
 using ArticleService.Services;
@@ -16,6 +17,9 @@ builder.Services.AddSingleton<IMongoDbConnectionFactory, MongoDbConnectionFactor
 builder.Services.AddSingleton<IArticlesService, ArticlesService>();
 
 var app = builder.Build();
+app.UseCustomExceptionHandling();
+app.UseHttpsRedirection();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -25,7 +29,4 @@ if (app.Environment.IsDevelopment())
 }
 
 app.RegisterGetArticleEndpoints();
-
-app.UseHttpsRedirection();
-
 app.Run();
