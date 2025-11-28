@@ -10,16 +10,21 @@ namespace ArticleService.Services;
 public class ArticlesService : IArticlesService
 {
     private readonly IMongoDbConnectionFactory _mongoDbConnectionFactory;
+    private readonly ILogger<ArticlesService> _logger;
 
-    public ArticlesService(IMongoDbConnectionFactory mongoDbConnectionFactory)
+    public ArticlesService(IMongoDbConnectionFactory mongoDbConnectionFactory, ILogger<ArticlesService> logger)
     {
         _mongoDbConnectionFactory = mongoDbConnectionFactory;
+        _logger = logger;
     }
 
 
     public async Task<List<ArticleResponse>> GetArticleByTitle(GetArticlesByTitleRequest request)
     {
+        _logger.LogInformation("{Class}.{Method} started at {Time}",
+            nameof(ArticlesService), nameof(GetArticleByTitle), DateTime.UtcNow);
         var collection = _mongoDbConnectionFactory.GetCollection();
+        
         List<ArticleEntity> articleSearchResult =
             await collection.Find(a => a.Title.Equals(request.PossibleTitle)).ToListAsync();
 
@@ -35,12 +40,15 @@ public class ArticlesService : IArticlesService
                 Content = articleEntity.Content,
             });
         }
-
+        _logger.LogInformation("{Class}.{Method} complete at {Time}",
+            nameof(ArticlesService), nameof(GetArticleByTitle), DateTime.UtcNow);
         return response;
     }
 
-    public async Task CreateArticle(CreatArticleRequest request)
+    public async Task CreateArticle(CreateArticleRequest request)
     {
+        _logger.LogInformation("{Class}.{Method} started at {Time}",
+            nameof(ArticlesService), nameof(CreateArticle), DateTime.UtcNow);
         var collection = _mongoDbConnectionFactory.GetCollection();
         var article = new ArticleEntity
         {
@@ -52,5 +60,8 @@ public class ArticlesService : IArticlesService
         };
 
         await collection.InsertOneAsync(article);
+        
+        _logger.LogInformation("{Class}.{Method} complete at {Time}",
+            nameof(ArticlesService), nameof(CreateArticle), DateTime.UtcNow);
     }
 }
