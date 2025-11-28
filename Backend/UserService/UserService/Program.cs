@@ -1,3 +1,4 @@
+using UserService.AppSettings;
 using UserService.Endpoints;
 using UserService.Extensions;
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("ConnectionStrings"));
 
 var app = builder.Build();
 app.UseCustomExceptionHandling();
