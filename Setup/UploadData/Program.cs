@@ -1,5 +1,5 @@
+using Microsoft.OpenApi.Models;
 using UploadData.AppSettings;
-using UploadData.Database;
 using UploadData.Database.Implementations;
 using UploadData.Endpoints;
 using UploadData.Extensions;
@@ -14,7 +14,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options => 
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Set up application",
+        Description = "This uploads dummy articles and users to the postgres and mongo DB",
+    }));
 builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("ConnectionStrings"));
 builder.Services.Configure<CsvLocations>(builder.Configuration.GetSection("CsvLocations"));
 builder.Services.AddScoped<IUploadService, UploadService>();
@@ -37,5 +43,6 @@ if (app.Environment.IsDevelopment())
 
 /* Adding Endpoints here */
 app.AddUploadEndpoints();
+app.AddHealthEndpoints();
 
 app.Run();
