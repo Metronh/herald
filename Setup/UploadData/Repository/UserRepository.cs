@@ -25,9 +25,9 @@ public class UserRepository : IUserRepository
             nameof(UserRepository), nameof(UploadUser), DateTime.UtcNow);
         using var dbConnection = await _dbConnectionFactory.CreateConnectionAsync();
         await dbConnection.ExecuteAsync("""
-                                        INSERT INTO users (Id, Username, Email, FirstName, LastName, Password) 
+                                        INSERT INTO users (Id, Username, Email, FirstName, LastName, Administrator, Password) 
                                         VALUES 
-                                            (@Id, @Username, @Email, @FirstName, @LastName, @Password)
+                                            (@Id, @Username, @Email, @FirstName, @LastName, @Administrator, @Password)
                                         """, user);
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
             nameof(UserRepository), nameof(UploadUser), DateTime.UtcNow);

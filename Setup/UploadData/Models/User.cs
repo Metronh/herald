@@ -10,4 +10,5 @@ public class User
     [Name("last_name")] public required string LastName { get; init; }
     [Name("password")] public required string Password { get; set; }
     [Ignore] public required Guid Id { get; init; } = Guid.NewGuid();
+    [Ignore] public required bool Administrator { get; init; } = false;
 }

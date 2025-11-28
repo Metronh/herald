@@ -4,6 +4,7 @@ CREATE TABLE users (
     Email VARCHAR(100) NOT NULL UNIQUE,
     FirstName VARCHAR(50) NOT NULL,
     LastName VARCHAR(50) NOT NULL,
+    Administrator BOOLEAN NOT NULL DEFAULT FALSE,
     Password VARCHAR(200) NOT NULL,
     Created_at TIMESTAMP DEFAULT NOW()
 );
