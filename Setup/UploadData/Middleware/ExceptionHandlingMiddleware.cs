@@ -8,10 +8,12 @@ public class ExceptionHandlingMiddleware
 {
     private readonly string _contentTypeJson = "application/json";
     private readonly RequestDelegate _next;
+    private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
-    public ExceptionHandlingMiddleware(RequestDelegate next)
+    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
     {
         _next = next;
+        _logger = logger;
     }
 
     public async Task InvokeAsync(HttpContext httpContext)
@@ -22,12 +24,12 @@ public class ExceptionHandlingMiddleware
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"There was an error and this is the error {ex.Message}");
-            await HandleExceptionAsync(httpContext, ex);
+            _logger.LogError("Error: {exceptionMsg}, at {utcTime}",ex, DateTime.UtcNow);
+            await HandleExceptionAsync(httpContext);
         }
     }
 
-    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
+    private async Task HandleExceptionAsync(HttpContext context)
     {
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         context.Response.ContentType = _contentTypeJson;
