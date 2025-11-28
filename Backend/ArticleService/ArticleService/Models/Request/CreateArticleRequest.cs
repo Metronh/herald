@@ -1,6 +1,6 @@
 namespace ArticleService.Models.Request;
 
-public record CreatArticleRequest
+public record CreateArticleRequest
 {
     public required string Author { get; init; }
     public required string Title { get; set; }

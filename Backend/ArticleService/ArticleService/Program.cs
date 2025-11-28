@@ -29,4 +29,5 @@ if (app.Environment.IsDevelopment())
 }
 
 app.RegisterGetArticleEndpoints();
+app.AddHealthEndpoint();
 app.Run();
