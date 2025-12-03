@@ -58,12 +58,11 @@ public class AccountService : IAccountService
             Email = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName,
-            Password = request.Password,
             Administrator = isAdministrator,
             CreatedAt = DateOnly.FromDateTime(DateTime.Now),
         };
 
-        user.Password = _hasher.HashPassword(user, user.Password);
+        user.Password = _hasher.HashPassword(user, request.Password);
         await _userRepository.CreateUser(user: user);
         response.IsAccountCreated = true;
         _logger.LogInformation("{Class}.{Method} completed at {Time}",

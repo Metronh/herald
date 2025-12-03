@@ -8,6 +8,6 @@ public class UserEntity
     public required string FirstName { get; init; }
     public required string LastName { get; init; }
     public required bool Administrator { get; init; }
-    public required string Password { get; set; }
+    public string? Password { get; set; }
     public required DateOnly CreatedAt { get; init; }
 }
