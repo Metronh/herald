@@ -1,12 +1,6 @@
 using ArticleService.AppSettings;
-using ArticleService.Database;
 using ArticleService.Endpoints;
 using ArticleService.Extensions;
-using ArticleService.Interfaces.Database;
-using ArticleService.Interfaces.Services;
-using ArticleService.RegisterServices;
-using ArticleService.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 

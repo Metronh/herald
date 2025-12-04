@@ -4,11 +4,10 @@ using ArticleService.Interfaces.Database;
 using ArticleService.Interfaces.Services;
 using ArticleService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
-namespace ArticleService.RegisterServices;
+namespace ArticleService.Extensions;
 
 public static class ServiceRegistrationExtensions
 {
