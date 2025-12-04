@@ -4,7 +4,7 @@ using UploadData.AppSettings;
 using UploadData.Interfaces.Database;
 using UploadData.Models;
 
-namespace UploadData.Database.Implementations;
+namespace UploadData.Database;
 
 public class MongoDbConnectionFactory : IMongoDbConnectionFactory
 {

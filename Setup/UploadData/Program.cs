@@ -1,6 +1,6 @@
 using Microsoft.OpenApi.Models;
 using UploadData.AppSettings;
-using UploadData.Database.Implementations;
+using UploadData.Database;
 using UploadData.Endpoints;
 using UploadData.Extensions;
 using UploadData.Interfaces.Database;

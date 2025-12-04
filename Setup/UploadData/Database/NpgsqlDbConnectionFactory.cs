@@ -4,7 +4,7 @@ using Npgsql;
 using UploadData.AppSettings;
 using UploadData.Interfaces.Database;
 
-namespace UploadData.Database.Implementations;
+namespace UploadData.Database;
 
 public class NpgsqlDbConnectionFactory : IDbConnectionFactory
 {
