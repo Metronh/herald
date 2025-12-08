@@ -1,21 +1,21 @@
 using ArticleService.Interfaces.Services;
 using ArticleService.Models.Request;
 using ArticleService.Models.Response;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Hybrid;
 
-namespace ArticleService.Services;
+namespace ArticleService.Services.CachedServices;
 
 public class CachedArticleService : IArticlesService
 {
     private readonly IArticlesService _articlesService;
-    private readonly IMemoryCache _memoryCache;
+    private readonly HybridCache _hybridCache;
     private readonly ILogger<CachedArticleService> _logger;
 
-    public CachedArticleService(IArticlesService articlesService, IMemoryCache memoryCache,
+    public CachedArticleService(IArticlesService articlesService, HybridCache hybridCache,
         ILogger<CachedArticleService> logger)
     {
         _articlesService = articlesService;
-        _memoryCache = memoryCache;
+        _hybridCache = hybridCache;
         _logger = logger;
     }
 
@@ -24,8 +24,12 @@ public class CachedArticleService : IArticlesService
         _logger.LogInformation("{Class}.{Method} started at {Time}",
             nameof(CachedArticleService), nameof(GetArticleByTitle), DateTime.UtcNow);
         
-        List<ArticleResponse> result = await _memoryCache.GetOrCreateAsync(request.PossibleTitle,
-            async entry => await _articlesService.GetArticleByTitle(request));
+        List<ArticleResponse> result = await _hybridCache.GetOrCreateAsync(request.PossibleTitle,
+            async entry => await _articlesService.GetArticleByTitle(request),
+            new HybridCacheEntryOptions
+            {
+                Expiration = TimeSpan.FromMinutes(2)
+            }, tags:["Articles"]);
 
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
             nameof(CachedArticleService), nameof(GetArticleByTitle), DateTime.UtcNow);

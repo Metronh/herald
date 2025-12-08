@@ -5,8 +5,9 @@ using ArticleService.Interfaces.Repository;
 using ArticleService.Interfaces.Services;
 using ArticleService.Repository;
 using ArticleService.Services;
+using ArticleService.Services.CachedServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
@@ -59,14 +60,15 @@ public static class ServiceRegistrationExtensions
     {
         builder.Services.AddSingleton<ArticlesService>();
         builder.Services.AddSingleton<IArticlesService>(x =>
-            new CachedArticleService(x.GetRequiredService<ArticlesService>(), x.GetRequiredService<IMemoryCache>(),
+            new CachedArticleService(x.GetRequiredService<ArticlesService>(), x.GetRequiredService<HybridCache>(),
                 x.GetRequiredService<ILogger<CachedArticleService>>()));
         builder.Services.AddSingleton<IArticlesRepository, ArticlesRepository>();
     }
 
-    public static void AddInMemoryCaching(this WebApplicationBuilder builder)
+    public static void AddCaching(this WebApplicationBuilder builder, ConnectionStrings connectionStrings)
     {
-        builder.Services.AddMemoryCache();
+        builder.Services.AddStackExchangeRedisCache(opt => { opt.Configuration = connectionStrings.Redis; });
+        builder.Services.AddHybridCache();
     }
 
     public static void RegisterAuthorization(this WebApplicationBuilder builder, JwtInformation jwtInfo)
