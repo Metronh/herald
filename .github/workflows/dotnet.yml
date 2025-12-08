@@ -29,11 +29,10 @@ jobs:
       run: dotnet restore Backend/ArticleService/ArticleService/ArticleService.csproj
     - name: Build ArticleService
       run: dotnet build Backend/ArticleService/ArticleService/ArticleService.csproj --no-restore
+    - name: Test Article Service
+      run: dotnet test Backend/ArticleService/ArticleServiceTests/ArticleServiceTests.csproj --verbosity normal
 
     - name: Restore dependencies UserService
       run: dotnet restore Backend/UserService/UserService/UserService.csproj
     - name: Build ArticleService
       run: dotnet build Backend/UserService/UserService/UserService.csproj --no-restore
-
-#    - name: Test
-#      run: dotnet test --no-build --verbosity normal
