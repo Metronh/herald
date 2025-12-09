@@ -73,7 +73,13 @@ public static class ServiceRegistrationExtensions
 
     public static void RegisterAuthorization(this WebApplicationBuilder builder, JwtInformation jwtInfo)
     {
-        builder.Services.AddAuthorization();
+        builder.Services.AddAuthorization(opt =>
+        {
+            opt.AddPolicy("Admin", policy =>
+            {
+                policy.RequireRole("Admin");
+            });
+        });
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
         {
             opt.TokenValidationParameters = new TokenValidationParameters

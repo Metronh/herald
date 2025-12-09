@@ -10,7 +10,7 @@ public static class ArticleEndpoints
     public static void RegisterGetArticleEndpoints(this WebApplication app)
     {
         app.MapPost("/GetArticleByTitle", GetArticle).RequireAuthorization();
-        app.MapPost("/CreateArticle", CreateArticle).RequireAuthorization();
+        app.MapPost("/CreateArticle", CreateArticle).RequireAuthorization("Admin");
     }
 
     [EndpointName("Get article by title")]

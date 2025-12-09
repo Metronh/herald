@@ -106,7 +106,7 @@ public class AccountService : IAccountService
         if (isCorrectPassword == PasswordVerificationResult.Failed)
             return response;
 
-        response.Token = _tokenService.GenerateToken(user.Id, user.Email);
+        response.Token = _tokenService.GenerateToken(user.Id, user.Email, user.Administrator);
         response.Success = true;
 
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
