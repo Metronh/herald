@@ -33,7 +33,7 @@ public class UserRepository : IUserRepository
             nameof(UserRepository), nameof(UploadUser), DateTime.UtcNow);
     }
 
-    public async Task UploadArticles(List<Article> articles)
+    public async Task UploadArticles(IEnumerable<Article> articles)
     {
         _logger.LogInformation("{Class}.{Method} started at {Time}",
             nameof(UserRepository), nameof(UploadArticles), DateTime.UtcNow);

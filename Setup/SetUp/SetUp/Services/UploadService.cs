@@ -29,7 +29,7 @@ public class UploadService : IUploadService
         _logger.LogInformation("{Class}.{Method} started at {Time}",
             nameof(UploadService), nameof(UploadArticles), DateTime.UtcNow);
         IReadCsvHelper<Article> readCsvHelper = new ReadCsvHelper<Article>();
-        List<Article> articles = readCsvHelper.GetItemsFromCsv(_csvLocations.ArticlesCsv);
+        IEnumerable<Article> articles = readCsvHelper.GetItemsFromCsv(_csvLocations.ArticlesCsv);
         await _userRepository.UploadArticles(articles: articles);
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
             nameof(UploadService), nameof(UploadUsers), DateTime.UtcNow);
@@ -40,21 +40,15 @@ public class UploadService : IUploadService
         _logger.LogInformation("{Class}.{Method} started at {Time}",
             nameof(UploadService), nameof(UploadUsers), DateTime.UtcNow);
         IReadCsvHelper<User> readCsvHelper = new ReadCsvHelper<User>();
-        List<User> users = readCsvHelper.GetItemsFromCsv(_csvLocations.UsersCsv);
+        List<User> users = readCsvHelper.GetItemsFromCsv(_csvLocations.UsersCsv).ToList();
         var passwordHasher = new PasswordHasher<User>();
 
         Parallel.ForEach(users,
             user => user.Password = passwordHasher.HashPassword(user: user, password: user.Password));
-
-        var numberOfUsersUploaded = 0;
-        foreach (var user in users)
-        {
-            await _userRepository.UploadUser(user: user);
-            numberOfUsersUploaded++;
-        }
-
-        _logger.LogInformation("{Class}.{Method} uploaded {numberOfUsersUploaded} users", nameof(UploadService),
-            nameof(UploadUsers), numberOfUsersUploaded);
+        
+        var uploadTasks = users.Select(user => _userRepository.UploadUser(user));
+        await Task.WhenAll(uploadTasks);
+        
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
             nameof(UploadService), nameof(UploadUsers), DateTime.UtcNow);
     }

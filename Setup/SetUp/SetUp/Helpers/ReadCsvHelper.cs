@@ -6,15 +6,13 @@ namespace SetUp.Helpers;
 
 public class ReadCsvHelper<T> : IReadCsvHelper<T>
 {
-    public List<T> GetItemsFromCsv(string locationOfCsv)
+    public IEnumerable<T> GetItemsFromCsv(string locationOfCsv)
     {
-        List<T> items = new List<T>();
         using (var reader = new StreamReader(locationOfCsv))
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
-        {
-            items = csv.GetRecords<T>().ToList();
-        }
-
-        return items;
+            foreach (var item in csv.GetRecords<T>())
+            {
+                yield return item;
+            }
     }
 }
