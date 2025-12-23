@@ -23,19 +23,57 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODBPASSWORD}
   redis:
     image: redis
+    container_name: redis-cache
     restart: always
     ports:
       - 6379:6379
-  userservice:
-    image: userservice
-    container_name: userservice
+  user-service:
+    image: user-service
+    container_name: user-service
     restart: always
     ports:
       - 8080:8080
     build: 
       context: Backend/UserService
       dockerfile: UserService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+    depends_on:
+      - postgres
+      - set-up
 
+  article-service:
+    image: article-service
+    container_name: article-service
+    restart: always
+    ports:
+      - 8081:8080
+    build: 
+      context: Backend/ArticleService
+      dockerfile: ArticleService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+    depends_on:
+      - postgres
+      - mongo
+      - redis
+      - user-service
+      - set-up
+    
+  set-up:
+    image: set-up
+    container_name: set-up
+    restart: always
+    ports:
+      - 8082:8080
+    build: 
+      context: Setup/SetUp
+      dockerfile: SetUp/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+    depends_on:
+      - postgres
+      - mongo
 
 volumes:
   postgres_data:
