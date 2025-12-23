@@ -36,6 +36,11 @@ services:
     build: 
       context: Backend/UserService
       dockerfile: UserService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+    depends_on:
+      - postgres
+      - set-up
 
   article-service:
     image: article-service
@@ -46,6 +51,14 @@ services:
     build: 
       context: Backend/ArticleService
       dockerfile: ArticleService/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+    depends_on:
+      - postgres
+      - mongo
+      - redis
+      - user-service
+      - set-up
     
   set-up:
     image: set-up
@@ -56,6 +69,11 @@ services:
     build: 
       context: Setup/SetUp
       dockerfile: SetUp/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+    depends_on:
+      - postgres
+      - mongo
 
 volumes:
   postgres_data:
