@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.Hybrid;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Resources;
 
 namespace ArticleService.Extensions;
 
@@ -93,6 +95,22 @@ public static class ServiceRegistrationExtensions
                 ValidateIssuer = true,
                 ValidateAudience = true,
             };
+        });
+    }
+
+    public static void RegisterLogging(this WebApplicationBuilder builder)
+    {
+        builder.Logging.ClearProviders();
+        builder.Logging.AddOpenTelemetry(opt =>
+        {
+            opt.SetResourceBuilder(ResourceBuilder.CreateEmpty().AddAttributes(new Dictionary<string, object>()
+            {
+                ["deployment.environment"] = builder.Environment.EnvironmentName,
+                ["service.name"] = "ArticleService",
+            }));
+            opt.IncludeFormattedMessage = true;
+            opt.IncludeFormattedMessage = true;
+            opt.AddConsoleExporter();
         });
     }
 }
