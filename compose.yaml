@@ -11,8 +11,10 @@ services:
       - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql
+    networks:
+      - herald-network
 
-  mongo:
+  mongodb:
     container_name: ArticleDB
     build: docker/MongoDb
     restart: always
@@ -21,12 +23,16 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODBUSERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODBPASSWORD}
+    networks:
+      - herald-network
   redis:
     image: redis
     container_name: redis-cache
     restart: always
     ports:
       - 6379:6379
+    networks:
+      - herald-network
   user-service:
     image: user-service
     container_name: user-service
@@ -38,9 +44,16 @@ services:
       dockerfile: UserService/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+      - ConnectionStrings__PostgresDb=${PostgresConnectionString}
+      - JwtTokenInformation__TokenKey=${JwtToken}
+      - JwtTokenInformation__Issuer=${JwtIssuer}
+      - JwtTokenInformation__Audience=${JwtAudience}
+      - JwtTokenInformation__ExpiryTime=${JwtExpiryTime}
     depends_on:
       - postgres
       - set-up
+    networks:
+      - herald-network
 
   article-service:
     image: article-service
@@ -53,12 +66,18 @@ services:
       dockerfile: ArticleService/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+      - ConnectionStrings__MongoDb=${MongoDbConnectionString}
+      - JwtTokenInformation__TokenKey=${JwtToken}
+      - JwtTokenInformation__Issuer=${JwtIssuer}
+      - JwtTokenInformation__Audience=${JwtAudience}
     depends_on:
       - postgres
-      - mongo
+      - mongodb
       - redis
       - user-service
       - set-up
+    networks:
+      - herald-network
     
   set-up:
     image: set-up
@@ -73,7 +92,11 @@ services:
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
     depends_on:
       - postgres
-      - mongo
+      - mongodb
+
+networks:
+  herald-network:
+    driver: bridge
 
 volumes:
   postgres_data:
