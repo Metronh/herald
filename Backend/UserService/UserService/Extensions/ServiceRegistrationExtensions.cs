@@ -1,3 +1,5 @@
+using OpenTelemetry.Logs;
+using OpenTelemetry.Resources;
 using UserService.AppSettings;
 using UserService.Interfaces.Services;
 using UserService.Services;
@@ -29,5 +31,22 @@ public static class ServiceRegistrationExtensions
     {
         builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("ConnectionStrings"));
         builder.Services.Configure<JwtInformation>(builder.Configuration.GetSection("JwtTokenInformation"));
+    }
+
+    public static void AddLogging(this WebApplicationBuilder builder)
+    {
+        builder.Logging.ClearProviders();
+        builder.Logging.AddOpenTelemetry(opt =>
+        {
+            opt.SetResourceBuilder(ResourceBuilder.CreateEmpty().AddAttributes(
+                new Dictionary<string, object>
+                {
+                    ["deployment.environment"] = builder.Environment.EnvironmentName,
+                    ["service.name"] = "ArticleService",
+                }));
+            opt.IncludeScopes = true;
+            opt.IncludeFormattedMessage = true;
+            opt.AddConsoleExporter();
+        });
     }
 }
