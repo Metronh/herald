@@ -45,9 +45,11 @@ public class UploadService : IUploadService
 
         Parallel.ForEach(users,
             user => user.Password = passwordHasher.HashPassword(user: user, password: user.Password));
-        
-        var uploadTasks = users.Select(user => _userRepository.UploadUser(user));
-        await Task.WhenAll(uploadTasks);
+
+        foreach (var user in users)
+        {
+            await _userRepository.UploadUser(user);
+        }
         
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
             nameof(UploadService), nameof(UploadUsers), DateTime.UtcNow);

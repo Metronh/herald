@@ -1,4 +1,3 @@
-using System.Data;
 using Microsoft.Extensions.Options;
 using Npgsql;
 using SetUp.AppSettings;
@@ -18,7 +17,7 @@ public class NpgsqlDbConnectionFactory : IDbConnectionFactory
         _connectionStrings = connectionStrings.Value;
     }
 
-    public async Task<IDbConnection> CreateConnectionAsync(CancellationToken token = default)
+    public async Task<NpgsqlConnection> CreateConnectionAsync(CancellationToken token = default)
     {
         _logger.LogInformation("{Class}.{Method} started at {Time}",
             nameof(NpgsqlDbConnectionFactory), nameof(CreateConnectionAsync), DateTime.UtcNow);

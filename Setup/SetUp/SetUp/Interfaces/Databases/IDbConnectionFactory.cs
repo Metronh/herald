@@ -1,8 +1,9 @@
 using System.Data;
+using Npgsql;
 
 namespace SetUp.Interfaces.Databases;
 
 public interface IDbConnectionFactory
 {
-    Task<IDbConnection> CreateConnectionAsync(CancellationToken token = default);
+    Task<NpgsqlConnection> CreateConnectionAsync(CancellationToken token = default);
 }

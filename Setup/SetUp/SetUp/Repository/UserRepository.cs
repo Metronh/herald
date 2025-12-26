@@ -23,7 +23,7 @@ public class UserRepository : IUserRepository
     {
         _logger.LogInformation("{Class}.{Method} started at {Time}",
             nameof(UserRepository), nameof(UploadUser), DateTime.UtcNow);
-        using var dbConnection = await _dbConnectionFactory.CreateConnectionAsync();
+        await using var dbConnection = await _dbConnectionFactory.CreateConnectionAsync();
         await dbConnection.ExecuteAsync("""
                                         INSERT INTO users (Id, Username, Email, FirstName, LastName, Administrator, Password) 
                                         VALUES 

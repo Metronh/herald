@@ -90,9 +90,15 @@ services:
       dockerfile: SetUp/Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=${ENVIRONMENT}
+      - ConnectionStrings__PostgresDb=${PostgresConnectionString}
+      - ConnectionStrings__MongoDb=${MongoDbConnectionString}
+      - CsvLocations__UsersCsv=SyntheticData/users.csv
+      - CsvLocations__ArticlesCsv=SyntheticData/articles.csv
     depends_on:
       - postgres
       - mongodb
+    networks:
+      - herald-network
 
 networks:
   herald-network:
