@@ -1,5 +1,8 @@
 
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Exporter;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Resources;
 using SetUp;
 using SetUp.AppSettings;
 using SetUp.Endpoints;
@@ -14,6 +17,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Logging.ClearProviders();
+builder.Logging.AddOpenTelemetry(opt =>
+{
+    opt.AddConsoleExporter();
+    opt.SetResourceBuilder(ResourceBuilder.CreateEmpty().AddAttributes(new Dictionary<string, object>()
+    {
+        ["deployment.environment"] = builder.Environment.EnvironmentName,
+        ["service.name"] = "SetUp",
+    }));
+    opt.IncludeFormattedMessage = true;
+    opt.IncludeFormattedMessage = true;
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options => 
     options.SwaggerDoc("v1", new OpenApiInfo

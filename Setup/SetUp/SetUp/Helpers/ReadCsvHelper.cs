@@ -8,7 +8,8 @@ public class ReadCsvHelper<T> : IReadCsvHelper<T>
 {
     public IEnumerable<T> GetItemsFromCsv(string locationOfCsv)
     {
-        using (var reader = new StreamReader(locationOfCsv))
+        var path = Path.Combine(Directory.GetCurrentDirectory(), locationOfCsv);
+        using (var reader = new StreamReader(path))
         using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
             foreach (var item in csv.GetRecords<T>())
             {
