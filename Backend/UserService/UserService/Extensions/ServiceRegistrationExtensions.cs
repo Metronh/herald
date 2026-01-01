@@ -42,7 +42,7 @@ public static class ServiceRegistrationExtensions
                 new Dictionary<string, object>
                 {
                     ["deployment.environment"] = builder.Environment.EnvironmentName,
-                    ["service.name"] = "ArticleService",
+                    ["service.name"] = "UserService",
                 }));
             opt.IncludeScopes = true;
             opt.IncludeFormattedMessage = true;
