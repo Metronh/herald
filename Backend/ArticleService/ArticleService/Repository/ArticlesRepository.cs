@@ -7,12 +7,12 @@ namespace ArticleService.Repository;
 
 public class ArticlesRepository : IArticlesRepository
 {
-    private readonly IMongoDbConnectionFactory _mongoDbConnectionFactory;
+    private readonly IMongoDbConnection _mongoDbConnection;
     private readonly ILogger<ArticlesRepository> _logger;
 
-    public ArticlesRepository(IMongoDbConnectionFactory mongoDbConnectionFactory, ILogger<ArticlesRepository> logger)
+    public ArticlesRepository(IMongoDbConnection mongoDbConnection, ILogger<ArticlesRepository> logger)
     {
-        _mongoDbConnectionFactory = mongoDbConnectionFactory;
+        _mongoDbConnection = mongoDbConnection;
         _logger = logger;
     }
 
@@ -20,7 +20,7 @@ public class ArticlesRepository : IArticlesRepository
     {
         _logger.LogInformation("{Class}.{Method} started at {Time}",
             nameof(ArticlesRepository), nameof(GetArticlesByTitle), DateTime.UtcNow);
-        var collection = _mongoDbConnectionFactory.GetCollection();
+        var collection = _mongoDbConnection.GetCollection();
         
         List<ArticleEntity> articleSearchResult =
             await collection.Find(a => a.Title.Equals(possibleTitle)).ToListAsync();
@@ -35,7 +35,7 @@ public class ArticlesRepository : IArticlesRepository
         _logger.LogInformation("{Class}.{Method} started at {Time}",
             nameof(ArticlesRepository), nameof(CreateArticle), DateTime.UtcNow);
 
-        var collection = _mongoDbConnectionFactory.GetCollection();
+        var collection = _mongoDbConnection.GetCollection();
         
         await collection.InsertOneAsync(article);
         

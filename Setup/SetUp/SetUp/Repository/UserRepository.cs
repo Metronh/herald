@@ -8,14 +8,14 @@ namespace SetUp.Repository;
 public class UserRepository : IUserRepository
 {
     private readonly IDbConnectionFactory _dbConnectionFactory;
-    private readonly IMongoDbConnectionFactory _mongoDbConnectionFactory;
+    private readonly IMongoDbConnection _mongoDbConnection;
     private readonly ILogger<UserRepository> _logger;
 
-    public UserRepository(IDbConnectionFactory dbConnectionFactory, IMongoDbConnectionFactory mongoDbConnectionFactory,
+    public UserRepository(IDbConnectionFactory dbConnectionFactory, IMongoDbConnection mongoDbConnection,
         ILogger<UserRepository> logger)
     {
         _dbConnectionFactory = dbConnectionFactory;
-        _mongoDbConnectionFactory = mongoDbConnectionFactory;
+        _mongoDbConnection = mongoDbConnection;
         _logger = logger;
     }
 
@@ -37,7 +37,7 @@ public class UserRepository : IUserRepository
     {
         _logger.LogInformation("{Class}.{Method} started at {Time}",
             nameof(UserRepository), nameof(UploadArticles), DateTime.UtcNow);
-        var collection = _mongoDbConnectionFactory.GetCollection();
+        var collection = _mongoDbConnection.GetCollection();
         await collection.InsertManyAsync(articles);
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
             nameof(UserRepository), nameof(UploadArticles), DateTime.UtcNow);

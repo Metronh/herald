@@ -3,7 +3,7 @@ using SetUp.Models;
 
 namespace SetUp.Interfaces.Databases;
 
-public interface IMongoDbConnectionFactory
+public interface IMongoDbConnection
 {
     IMongoCollection<Article> GetCollection();
 }
