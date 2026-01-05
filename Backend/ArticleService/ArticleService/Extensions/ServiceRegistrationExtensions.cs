@@ -52,11 +52,11 @@ public static class ServiceRegistrationExtensions
     {
         builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("ConnectionStrings"));
         builder.Services.Configure<JwtInformation>(
-            builder.Configuration.GetSection("JwtTokenInformationJwtTokenInformation"));
+            builder.Configuration.GetSection("JwtTokenInformation"));
     }
 
     public static void RegisterDatabases(this WebApplicationBuilder builder) =>
-        builder.Services.AddSingleton<IMongoDbConnectionFactory, MongoDbConnectionFactory>();
+        builder.Services.AddSingleton<IMongoDbConnection, MongoDbConnection>();
 
     public static void RegisterServices(this WebApplicationBuilder builder)
     {

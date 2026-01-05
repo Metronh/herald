@@ -3,7 +3,7 @@ using MongoDB.Driver;
 
 namespace ArticleService.Interfaces.Database;
 
-public interface IMongoDbConnectionFactory
+public interface IMongoDbConnection
 {
     IMongoCollection<ArticleEntity> GetCollection();
 }

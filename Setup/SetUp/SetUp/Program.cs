@@ -42,7 +42,7 @@ builder.Services.Configure<CsvLocations>(builder.Configuration.GetSection("CsvLo
 builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<IDbConnectionFactory, NpgsqlDbConnectionFactory>();
-builder.Services.AddSingleton<IMongoDbConnectionFactory, MongoDbConnectionFactory>();
+builder.Services.AddSingleton<IMongoDbConnection, MongoDbConnection>();
 
 
 var app = builder.Build();
