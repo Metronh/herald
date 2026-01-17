@@ -39,5 +39,6 @@ public class CachedArticleService : IArticlesService
     public async Task CreateArticle(CreateArticleRequest request)
     {
         await _articlesService.CreateArticle(request);
+        await _hybridCache.RemoveByTagAsync("Articles");
     }
 }
