@@ -38,8 +38,6 @@ A modern .NET 9/8 microservice for managing articles with distributed caching an
  ┃ ┣ 📜Program.cs
  ┣ 📂ArticleServiceTests
  ┃ ┣ 📂ServicesTest
- ┣ 📂Tests
- ┃ ┣ 📂ServicesTests
 ```
 🗂️ UserService
 ```
@@ -68,42 +66,40 @@ A modern .NET 9/8 microservice for managing articles with distributed caching an
  ┣ 📂MongoDb
  ┗ 📂SQL
 ```
-## Resources
-```
-📦Resources
- ┣ 📜articles_1000_with_text.csv
- ┣ 📜generateNames.py
- ┗ 📜users.csv
-```
 
 ## Setup
 ```
-📦Setup
- ┗ 📂SetUp
- ┃ ┣ 📂SetUp
- ┃ ┃ ┣ 📂AppSettings
- ┃ ┃ ┣ 📂Database
- ┃ ┃ ┣ 📂Endpoints
- ┃ ┃ ┣ 📂Extensions
- ┃ ┃ ┣ 📂Helpers
- ┃ ┃ ┣ 📂Interfaces
- ┃ ┃ ┣ 📂Middleware
- ┃ ┃ ┣ 📂Models
- ┃ ┃ ┣ 📂Properties
- ┃ ┃ ┣ 📂Repository
- ┃ ┃ ┣ 📂Services
- ┃ ┃ ┣ 📜Program.cs
+📦SetUp
+ ┣ 📂AppSettings
+ ┣ 📂Data
+ ┣ 📂Database
+ ┣ 📂Endpoints
+ ┣ 📂Extensions
+ ┣ 📂Helpers
+ ┣ 📂Interfaces
+ ┣ 📂Middleware
+ ┣ 📂Models
+ ┣ 📂Repository
+ ┣ 📂Services
+ ┣ 📂SyntheticData
+ ┣ 📜Dockerfile
+ ┣ 📜Program.cs
 ```
 
 ## Running Locally 🚀
-1. Go to terminal open project and type ```docker compose up -d```
-2. Run setup project
-    - note: make sure in AppSettings all connection strings match and the location of articles_1000_with_text.csv and users.csv are there.
-3. Hit ```/SetUpProject``` endpoint
+1. Go to terminal open project and type ```docker compose up -d --build``` (Make sure .env file is there and appsettings.development too as well as compose.override.yaml for open ports)
+2. Run setup project on IDE
+3. Hit ```/SetUpProject``` endpoint to seed with dummy data.
 4. Run both UserService and ArticleService
 5. You're up and running 🏃‍♀️
 
+## Running with docker-compose
+1. Go to terminal open project and type ```docker compose up -d --build``` (Make sure .env file is there and appsettings.development too)
+2. The ports for each service
+    - SetUp: http://localhost:8082/swagger/index.html
+    - UserService: http://localhost:8080/swagger/index.html
+    - ArticleService: http://localhost:8081/swagger/index.html
+
 ## Shutting Down ✋🏿
-1. Go to terminal open project and type ```docker compose down```
-    - Note: If you want to delete the volumes make sure you use this ```docker compose down -v```
+1. Go to terminal open project and type ```docker compose down -v --rmi all```
 2. Shut down all instances of running in your IDE.

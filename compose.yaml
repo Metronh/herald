@@ -7,32 +7,42 @@ services:
       POSTGRES_USER: ${POSTGRESUSER}
       POSTGRES_PASSWORD: ${POSTGRESPASSWORD}
       POSTGRES_DB: usersdb
-    ports:
-      - 5432:5432
     volumes:
       - postgres_data:/var/lib/postgresql
     networks:
       - herald-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRESUSER} -d usersdb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   mongodb:
     container_name: ArticleDB
     build: docker/MongoDb
     restart: always
-    ports:
-      - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${MONGODBUSERNAME}
       MONGO_INITDB_ROOT_PASSWORD: ${MONGODBPASSWORD}
     networks:
       - herald-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   redis:
-    image: redis
+    image: redis:alpine
     container_name: redis-cache
     restart: always
-    ports:
-      - 6379:6379
     networks:
       - herald-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
   user-service:
     image: user-service
     container_name: user-service
@@ -50,8 +60,8 @@ services:
       - JwtTokenInformation__Audience=${JwtAudience}
       - JwtTokenInformation__ExpiryTime=${JwtExpiryTime}
     depends_on:
-      - postgres
-      - set-up
+      postgres:
+        condition: service_healthy
     networks:
       - herald-network
 
@@ -71,11 +81,12 @@ services:
       - JwtTokenInformation__Issuer=${JwtIssuer}
       - JwtTokenInformation__Audience=${JwtAudience}
     depends_on:
-      - postgres
-      - mongodb
-      - redis
-      - user-service
-      - set-up
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      user-service:
+        condition: service_started
     networks:
       - herald-network
     
@@ -95,8 +106,10 @@ services:
       - CsvLocations__UsersCsv=SyntheticData/users.csv
       - CsvLocations__ArticlesCsv=SyntheticData/articles.csv
     depends_on:
-      - postgres
-      - mongodb
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
     networks:
       - herald-network
 
