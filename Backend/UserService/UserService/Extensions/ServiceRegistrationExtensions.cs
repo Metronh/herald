@@ -1,7 +1,13 @@
+using Microsoft.AspNetCore.Identity;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
 using UserService.AppSettings;
+using UserService.Database;
+using UserService.Entities;
+using UserService.Interfaces.Database;
+using UserService.Interfaces.Repository;
 using UserService.Interfaces.Services;
+using UserService.Repository;
 using UserService.Services;
 using UserService.Validation;
 
@@ -13,6 +19,10 @@ public static class ServiceRegistrationExtensions
     {
         builder.Services.AddScoped<IAccountService, AccountService>();
         builder.Services.AddSingleton<ITokenService, TokenService>();
+        builder.Services.AddHostedService<SessionCleanUpService>();
+        builder.Services.AddSingleton<IDbConnectionFactory, NpgsqlDbConnectionFactory>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
+        builder.Services.AddSingleton<PasswordHasher<UserEntity>>();
     }
 
     public static void AddValidators(this WebApplicationBuilder builder)

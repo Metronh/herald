@@ -18,11 +18,6 @@ builder.AddAppSettings();
 builder.AddValidators();
 builder.AddServices();
 
-builder.Services.AddSingleton<IDbConnectionFactory, NpgsqlDbConnectionFactory>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddSingleton<PasswordHasher<UserEntity>>();
-
-
 var app = builder.Build();
 app.UseCustomExceptionHandling();
 
