@@ -8,3 +8,13 @@ CREATE TABLE users (
     Password VARCHAR(200) NOT NULL,
     Created_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TABLE login_sessions(
+    LoginSessionId UUID PRIMARY KEY,
+    UserId UUID NOT NULL,
+    LoginTime TIMESTAMP NOT NULL,
+    LogoutTime TIMESTAMP NOT NULL,
+    SessionActive BOOLEAN NOT NULL DEFAULT TRUE,
+    FOREIGN KEY (UserId) REFERENCES users(Id)
+        ON DELETE CASCADE
+);

@@ -100,13 +100,13 @@ public class AccountService : IAccountService
         if (user is null)
             return response;
         
-
         var isCorrectPassword = _hasher.VerifyHashedPassword(user: user, user.Password, request.Password);
 
         if (isCorrectPassword == PasswordVerificationResult.Failed)
             return response;
-
+        
         response.Token = _tokenService.GenerateToken(user.Id, user.Email, user.Administrator);
+        await _userRepository.RegisterLogin(user);
         response.Success = true;
 
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
