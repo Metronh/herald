@@ -10,6 +10,18 @@ jobs:
     build:
         runs-on: ubuntu-latest
         steps:
+            - name: Generate .env file
+              run: | 
+                > .env
+                echo "POSTGRESUSER=${{ secrets.POSTGRES_USER }}" >>  .env 
+                echo "POSTGRESPASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >>  .env
+                echo "MONGODBUSERNAME=${{ secrets.MONGODB_USERNAME }}" >>  .env
+                echo "MONGODBPASSWORD=${{ secrets.MONGODB_PASSWORD }}" >>  .env
+                echo "MongoDbConnectionString=mongodb://${{ secrets.MONGODB_USERNAME }}:${{ secrets.MONGODB_PASSWORD }}@mongodb:27017/articlesDB?authSource=admin&authMechanism=SCRAM-SHA-256"
+                echo "JwtToken=${{ secrets.JWT_TOKEN }}" >>  .env
+                echo "JwtIssuer=${{ secrets.JWT_ISSUER }}" >>  .env
+                echo "JwtAudience=${{ secrets.JWT_AUDIENCE }}" >>  .env
+                echo "JwtExpiryTime=${{ secrets.JWT_EXPIRY_TIME }}" >>  .env
             - uses: actions/checkout@v4
             - name: Run docker compose
               uses: hoverkraft-tech/compose-action@3846bcd61da338e9eaaf83e7ed0234a12b099b72 
