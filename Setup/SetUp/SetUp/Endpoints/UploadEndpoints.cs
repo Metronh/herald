@@ -16,7 +16,8 @@ public static class UploadEndpoints
         ILogger<Program> logger)
     {
         logger.LogInformation("SetUpProject endpoint hit at {utcTime}", DateTime.UtcNow);
-        await Task.WhenAll(uploadService.UploadUsers(), uploadService.UploadArticles());
+        await uploadService.UploadUsers();
+        // await Task.WhenAll(uploadService.UploadUsers(), uploadService.UploadArticles());
         logger.LogInformation("SetUpProject endpoint completed at {utcTime}", DateTime.UtcNow);
         return TypedResults.Created();
     }

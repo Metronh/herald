@@ -4,6 +4,5 @@ namespace SetUp.Interfaces.Repository;
 
 public interface IUserRepository
 {
-    public Task UploadUser(User user);
-    public Task UploadArticles(IEnumerable<Article> articles);
+    public Task UploadUsers(List<User> user);
 }

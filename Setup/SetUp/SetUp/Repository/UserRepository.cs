@@ -1,4 +1,4 @@
-using Dapper;
+using SetUp.Database;
 using SetUp.Interfaces.Databases;
 using SetUp.Interfaces.Repository;
 using SetUp.Models;
@@ -7,39 +7,25 @@ namespace SetUp.Repository;
 
 public class UserRepository : IUserRepository
 {
-    private readonly IDbConnectionFactory _dbConnectionFactory;
-    private readonly IMongoDbConnection _mongoDbConnection;
     private readonly ILogger<UserRepository> _logger;
+    private readonly UsersDbContext _usersDbContext;
 
-    public UserRepository(IDbConnectionFactory dbConnectionFactory, IMongoDbConnection mongoDbConnection,
-        ILogger<UserRepository> logger)
+    public UserRepository(IMongoDbConnection mongoDbConnection,
+        ILogger<UserRepository> logger, UsersDbContext usersDbContext)
     {
-        _dbConnectionFactory = dbConnectionFactory;
-        _mongoDbConnection = mongoDbConnection;
         _logger = logger;
+        _usersDbContext = usersDbContext;
     }
 
-    public async Task UploadUser(User user)
+    public async Task UploadUsers(List<User> users)
     {
         _logger.LogInformation("{Class}.{Method} started at {Time}",
-            nameof(UserRepository), nameof(UploadUser), DateTime.UtcNow);
-        await using var dbConnection = await _dbConnectionFactory.CreateConnectionAsync();
-        await dbConnection.ExecuteAsync("""
-                                        INSERT INTO users (Id, Username, Email, FirstName, LastName, Administrator, Password) 
-                                        VALUES 
-                                            (@Id, @Username, @Email, @FirstName, @LastName, @Administrator, @Password)
-                                        """, user);
+            nameof(UserRepository), nameof(UploadUsers), DateTime.UtcNow);
+        
+        _usersDbContext.AddRange(users);
+        await _usersDbContext.SaveChangesAsync();
+        
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
-            nameof(UserRepository), nameof(UploadUser), DateTime.UtcNow);
-    }
-
-    public async Task UploadArticles(IEnumerable<Article> articles)
-    {
-        _logger.LogInformation("{Class}.{Method} started at {Time}",
-            nameof(UserRepository), nameof(UploadArticles), DateTime.UtcNow);
-        var collection = _mongoDbConnection.GetCollection();
-        await collection.InsertManyAsync(articles);
-        _logger.LogInformation("{Class}.{Method} completed at {Time}",
-            nameof(UserRepository), nameof(UploadArticles), DateTime.UtcNow);
+            nameof(UserRepository), nameof(UploadUsers), DateTime.UtcNow);
     }
 }
