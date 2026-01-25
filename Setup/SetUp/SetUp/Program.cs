@@ -15,5 +15,6 @@ app.AddSwagger();
 /* Adding Endpoints here */
 app.AddUploadEndpoints();
 app.AddHealthEndpoints();
+app.AddDeleteEndpoints();
 
 app.Run();

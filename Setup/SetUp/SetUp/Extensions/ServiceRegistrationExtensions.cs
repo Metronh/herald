@@ -19,6 +19,7 @@ public static class ServiceRegistrationExtensions
     {
         builder.Services.AddTransient<IReadCsvHelper, ReadCsvHelper>();
         builder.Services.AddScoped<IUploadService, UploadService>();
+        builder.Services.AddScoped<IDeleteService, DeleteService>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
     }
