@@ -26,13 +26,13 @@ public class ArticleRepository : IArticleRepository
             nameof(ArticleRepository), nameof(UploadArticles), DateTime.UtcNow);
     }
 
-    public async Task DeleteArticles()
+    public async Task DeleteAllArticles()
     {
         _logger.LogInformation("{Class}.{Method} started at {Time}",
-            nameof(ArticleRepository), nameof(DeleteArticles), DateTime.UtcNow);
+            nameof(ArticleRepository), nameof(DeleteAllArticles), DateTime.UtcNow);
         var collection = _mongoDbConnection.GetCollection();
         await collection.DeleteManyAsync(FilterDefinition<Article>.Empty);
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
-            nameof(ArticleRepository), nameof(DeleteArticles), DateTime.UtcNow);
+            nameof(ArticleRepository), nameof(DeleteAllArticles), DateTime.UtcNow);
     }
 }

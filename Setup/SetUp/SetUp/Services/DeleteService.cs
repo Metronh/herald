@@ -20,7 +20,7 @@ public class DeleteService : IDeleteService
     {
         _logger.LogInformation("{Class}.{Method} started at {Time}",
             nameof(DeleteService), nameof(DeleteAllArticles), DateTime.UtcNow);
-        await _articleRepository.DeleteArticles();
+        await _articleRepository.DeleteAllArticles();
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
             nameof(DeleteService), nameof(DeleteAllArticles), DateTime.UtcNow);
     }
