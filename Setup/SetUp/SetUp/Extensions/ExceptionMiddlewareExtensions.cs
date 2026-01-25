@@ -1,6 +1,6 @@
 using SetUp.Middleware;
 
-namespace SetUp.ExceptionMiddlewareExtensions;
+namespace SetUp.Extensions;
 
 public static class ExceptionMiddlewareExtensions
 {

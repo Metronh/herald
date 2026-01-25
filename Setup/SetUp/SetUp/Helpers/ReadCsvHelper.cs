@@ -4,9 +4,9 @@ using SetUp.Interfaces.Helpers;
 
 namespace SetUp.Helpers;
 
-public class ReadCsvHelper<T> : IReadCsvHelper<T>
+public class ReadCsvHelper : IReadCsvHelper
 {
-    public IEnumerable<T> GetItemsFromCsv(string locationOfCsv)
+    public IEnumerable<T> GetItemsFromCsv<T>(string locationOfCsv)
     {
         var path = Path.Combine(Directory.GetCurrentDirectory(), locationOfCsv);
         using (var reader = new StreamReader(path))
