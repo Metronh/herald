@@ -4,7 +4,7 @@ using SetUp.AppSettings;
 using SetUp.Interfaces.Databases;
 using SetUp.Models;
 
-namespace SetUp;
+namespace SetUp.Database;
 
 public class MongoDbConnection : IMongoDbConnection
 {

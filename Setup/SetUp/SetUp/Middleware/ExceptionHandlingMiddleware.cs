@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace SetUp.Middleware;
 
-public class ExceptionHandlingMiddleware
+public class  ExceptionHandlingMiddleware
 {
     private readonly string _contentTypeJson = "application/json";
     private readonly RequestDelegate _next;

@@ -1,10 +1,10 @@
-
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
 using SetUp;
 using SetUp.AppSettings;
+using SetUp.Database;
 using SetUp.Endpoints;
 using SetUp.ExceptionMiddlewareExtensions;
 using SetUp.Interfaces.Databases;
@@ -41,8 +41,9 @@ builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("
 builder.Services.Configure<CsvLocations>(builder.Configuration.GetSection("CsvLocations"));
 builder.Services.AddScoped<IUploadService, UploadService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddSingleton<IDbConnectionFactory, NpgsqlDbConnectionFactory>();
+builder.Services.AddScoped<IArticleRepository, ArticleRepository>();
 builder.Services.AddSingleton<IMongoDbConnection, MongoDbConnection>();
+builder.Services.AddDbContext<UsersDbContext>();
 
 
 var app = builder.Build();
