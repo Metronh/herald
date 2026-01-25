@@ -1,3 +1,4 @@
+using MongoDB.Driver;
 using SetUp.Interfaces.Databases;
 using SetUp.Interfaces.Repository;
 using SetUp.Models;
@@ -23,5 +24,15 @@ public class ArticleRepository : IArticleRepository
         await collection.InsertManyAsync(articles);
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
             nameof(ArticleRepository), nameof(UploadArticles), DateTime.UtcNow);
+    }
+
+    public async Task DeleteAllArticles()
+    {
+        _logger.LogInformation("{Class}.{Method} started at {Time}",
+            nameof(ArticleRepository), nameof(DeleteAllArticles), DateTime.UtcNow);
+        var collection = _mongoDbConnection.GetCollection();
+        await collection.DeleteManyAsync(FilterDefinition<Article>.Empty);
+        _logger.LogInformation("{Class}.{Method} completed at {Time}",
+            nameof(ArticleRepository), nameof(DeleteAllArticles), DateTime.UtcNow);
     }
 }
