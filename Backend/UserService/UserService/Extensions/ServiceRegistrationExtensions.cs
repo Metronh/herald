@@ -22,7 +22,7 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddHostedService<SessionCleanUpService>();
         builder.Services.AddSingleton<IDbConnectionFactory, NpgsqlDbConnectionFactory>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
-        builder.Services.AddSingleton<PasswordHasher<UserEntity>>();
+        builder.Services.AddSingleton<IPasswordHasher<UserEntity>, PasswordHasher<UserEntity>>();
     }
 
     public static void AddValidators(this WebApplicationBuilder builder)

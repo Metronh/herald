@@ -14,12 +14,12 @@ public class AccountService : IAccountService
     private readonly ILogger<AccountService> _logger;
     private readonly CreateUserRequestValidator _createUserRequestValidator;
     private readonly IUserRepository _userRepository;
-    private readonly PasswordHasher<UserEntity> _hasher;
+    private readonly IPasswordHasher<UserEntity> _hasher;
     private readonly LoginRequestValidator _loginRequestValidator;
     private readonly ITokenService _tokenService;
 
     public AccountService(ILogger<AccountService> logger, CreateUserRequestValidator createUserRequestValidator,
-        IUserRepository userRepository, PasswordHasher<UserEntity> hasher, LoginRequestValidator loginRequestValidator,
+        IUserRepository userRepository, IPasswordHasher<UserEntity> hasher, LoginRequestValidator loginRequestValidator,
         ITokenService tokenService)
     {
         _logger = logger;
@@ -59,7 +59,7 @@ public class AccountService : IAccountService
             FirstName = request.FirstName,
             LastName = request.LastName,
             Administrator = isAdministrator,
-            CreatedAt = DateOnly.FromDateTime(DateTime.Now),
+            CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow),
         };
 
         user.Password = _hasher.HashPassword(user, request.Password);
