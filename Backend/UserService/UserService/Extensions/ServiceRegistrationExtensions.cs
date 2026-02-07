@@ -7,6 +7,7 @@ using UserService.Entities;
 using UserService.Interfaces.Database;
 using UserService.Interfaces.Repository;
 using UserService.Interfaces.Services;
+using UserService.Middleware;
 using UserService.Repository;
 using UserService.Services;
 using UserService.Validation;
@@ -23,6 +24,7 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddSingleton<IDbConnectionFactory, NpgsqlDbConnectionFactory>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddSingleton<IPasswordHasher<UserEntity>, PasswordHasher<UserEntity>>();
+        builder.Services.AddTransient<ExceptionHandlingMiddleware>();
     }
 
     public static void AddValidators(this WebApplicationBuilder builder)

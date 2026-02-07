@@ -4,38 +4,35 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace UserService.Middleware;
 
-public class ExceptionHandlingMiddleware
+public class ExceptionHandlingMiddleware : IMiddleware
 {
     private readonly string _contentTypeJson = "application/json";
-    private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
-    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
-    {
-        _next = next;
-        _logger = logger;
-    }
+    public ExceptionHandlingMiddleware(ILogger<ExceptionHandlingMiddleware> logger) =>_logger = logger;
 
-    public async Task InvokeAsync(HttpContext httpContext)
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         try
         {
-            await _next(httpContext);
+            await next(context);
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error: {exceptionMsg}, at {utcTime}", ex, DateTime.UtcNow);
-            await HandleExceptionAsync(httpContext, ex);
+            await HandleExceptionAsync(context, ex);
         }
     }
-
+    
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
+        _logger.LogError("Error: {exceptionMsg}, at {utcTime}", exception.Message, DateTime.UtcNow);
         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
         context.Response.ContentType = _contentTypeJson;
 
         var problemDetails = new ProblemDetails
         {
+            Title = "Server error",
+            Type = "Server error",
             Status = context.Response.StatusCode,
             Detail = "There was an internal server error.",
         };
