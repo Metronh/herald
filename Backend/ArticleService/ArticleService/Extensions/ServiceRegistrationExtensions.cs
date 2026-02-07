@@ -3,6 +3,7 @@ using ArticleService.Database;
 using ArticleService.Interfaces.Database;
 using ArticleService.Interfaces.Repository;
 using ArticleService.Interfaces.Services;
+using ArticleService.Middleware;
 using ArticleService.Repository;
 using ArticleService.Services;
 using ArticleService.Services.CachedServices;
@@ -65,6 +66,7 @@ public static class ServiceRegistrationExtensions
             new CachedArticleService(x.GetRequiredService<ArticlesService>(), x.GetRequiredService<HybridCache>(),
                 x.GetRequiredService<ILogger<CachedArticleService>>()));
         builder.Services.AddSingleton<IArticlesRepository, ArticlesRepository>();
+        builder.Services.AddTransient<ExceptionHandlingMiddleware>();
     }
 
     public static void AddCaching(this WebApplicationBuilder builder, ConnectionStrings connectionStrings)
