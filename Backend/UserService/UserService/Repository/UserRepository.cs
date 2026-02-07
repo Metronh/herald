@@ -14,11 +14,11 @@ public class UserRepository : IUserRepository
     private readonly JwtInformation _jwtInformation;
 
     public UserRepository(IDbConnectionFactory connectionFactory, ILogger<UserRepository> logger,
-        IOptions<JwtInformation> jwtInformation)
+        JwtInformation jwtInformation)
     {
         _connectionFactory = connectionFactory;
         _logger = logger;
-        _jwtInformation = jwtInformation.Value;
+        _jwtInformation = jwtInformation;
     }
 
     public async Task CreateUser(UserEntity user)

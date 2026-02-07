@@ -12,10 +12,10 @@ public class NpgsqlDbConnectionFactory : IDbConnectionFactory
     private readonly ILogger<NpgsqlDbConnectionFactory> _logger;
 
 
-    public NpgsqlDbConnectionFactory(IOptions<ConnectionStrings> connectionStrings,
+    public NpgsqlDbConnectionFactory(ConnectionStrings connectionStrings,
         ILogger<NpgsqlDbConnectionFactory> logger)
     {
-        _connectionStrings = connectionStrings.Value;
+        _connectionStrings = connectionStrings;
         _logger = logger;
     }
 
