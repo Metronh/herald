@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
 using UserService.AppSettings;
@@ -41,8 +42,16 @@ public static class ServiceRegistrationExtensions
 
     public static void AddAppSettings(this WebApplicationBuilder builder)
     {
-        builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("ConnectionStrings"));
-        builder.Services.Configure<JwtInformation>(builder.Configuration.GetSection("JwtTokenInformation"));
+        builder.Services.AddOptions<ConnectionStrings>().BindConfiguration("ConnectionStrings")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+        builder.Services.AddSingleton(serviceProvider =>
+            serviceProvider.GetRequiredService<IOptions<ConnectionStrings>>().Value);
+        builder.Services.AddOptions<JwtInformation>().BindConfiguration("JwtTokenInformation")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+        builder.Services.AddSingleton(serviceProvider =>
+            serviceProvider.GetRequiredService<IOptions<JwtInformation>>().Value);
     }
 
     public static void AddLogging(this WebApplicationBuilder builder)

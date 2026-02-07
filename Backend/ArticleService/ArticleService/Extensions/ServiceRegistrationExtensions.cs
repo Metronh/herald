@@ -9,6 +9,7 @@ using ArticleService.Services;
 using ArticleService.Services.CachedServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Caching.Hybrid;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OpenTelemetry.Logs;
@@ -51,9 +52,18 @@ public static class ServiceRegistrationExtensions
 
     public static void RegisterAppSettings(this WebApplicationBuilder builder)
     {
-        builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection("ConnectionStrings"));
-        builder.Services.Configure<JwtInformation>(
-            builder.Configuration.GetSection("JwtTokenInformation"));
+        builder.Services.AddOptions<ConnectionStrings>()
+            .BindConfiguration("ConnectionStrings")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+        builder.Services.AddSingleton(serviceProvider =>
+            serviceProvider.GetRequiredService<IOptions<ConnectionStrings>>().Value);
+        builder.Services.AddOptions<JwtInformation>()
+            .BindConfiguration("JwtTokenInformation")
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+        builder.Services.AddSingleton(serviceProvider =>
+            serviceProvider.GetRequiredService<IOptions<JwtInformation>>().Value);
     }
 
     public static void RegisterDatabases(this WebApplicationBuilder builder) =>
@@ -79,10 +89,7 @@ public static class ServiceRegistrationExtensions
     {
         builder.Services.AddAuthorization(opt =>
         {
-            opt.AddPolicy("Admin", policy =>
-            {
-                policy.RequireRole("Admin");
-            });
+            opt.AddPolicy("Admin", policy => { policy.RequireRole("Admin"); });
         });
         builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
         {

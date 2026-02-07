@@ -13,11 +13,11 @@ public class MongoDbConnection : IMongoDbConnection
     private readonly string _collectionName = "articles";
     private readonly IMongoCollection<ArticleEntity> _collection;
 
-    public MongoDbConnection(IOptions<ConnectionStrings> connectionStrings,
+    public MongoDbConnection(ConnectionStrings connectionStrings,
         ILogger<MongoDbConnection> logger)
     {
         _logger = logger;
-        var mongoClient = new MongoClient(connectionString: connectionStrings.Value.MongoDb);
+        var mongoClient = new MongoClient(connectionString: connectionStrings.MongoDb);
         _collection = mongoClient.GetDatabase(_database).GetCollection<ArticleEntity>(_collectionName);
         logger.LogInformation("MongoDB connection initialized for collection: {Collection}",
             "articles");

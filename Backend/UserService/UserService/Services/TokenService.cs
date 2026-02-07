@@ -11,9 +11,9 @@ public class TokenService : ITokenService
 {
     private readonly JwtInformation _jwtInformation;
 
-    public TokenService(IOptions<JwtInformation> jwtInformation)
+    public TokenService(JwtInformation jwtInformation)
     {
-        _jwtInformation = jwtInformation.Value;
+        _jwtInformation = jwtInformation;
     }
 
     public string GenerateToken(Guid id, string email, bool administrator)
