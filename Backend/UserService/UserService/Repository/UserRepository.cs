@@ -28,7 +28,7 @@ public class UserRepository : IUserRepository
         using var connection = await _connectionFactory.CreateConnectionAsync();
         await connection.ExecuteAsync(
             """
-            INSERT INTO users (Id, Username, Email, FirstName, LastName, Administrator, Password) 
+            INSERT INTO users (Id, username, email, first_name, last_name, Administrator, Password) 
             VALUES 
                 (@Id, @Username, @Email, @FirstName, @LastName, @Administrator, @Password)
             """, user
@@ -47,7 +47,7 @@ public class UserRepository : IUserRepository
 
 
         var user = await connection.QueryFirstOrDefaultAsync<UserEntity>("""
-                                                                         SELECT * FROM users WHERE username = @Username
+                                                                         SELECT * FROM Users WHERE username = @Username
                                                                          """, new { Username = username });
 
 
@@ -69,7 +69,7 @@ public class UserRepository : IUserRepository
         };
         using var connection = await _connectionFactory.CreateConnectionAsync();
         await connection.ExecuteAsync("""
-                                            INSERT INTO login_sessions (loginsessionid, userid, logintime, logouttime) 
+                                            INSERT INTO login_sessions (login_session_id, user_id, login_time, logout_time) 
                                             VALUES (@LoginSessionId, @UserId, @LoginTime, @LogoutTime)
                                             """, loginSessionEntity);
     }
@@ -81,8 +81,8 @@ public class UserRepository : IUserRepository
         using var connection = await _connectionFactory.CreateConnectionAsync();
         await connection.ExecuteAsync("""
                                             UPDATE login_sessions 
-                                            SET sessionactive = false 
-                                            WHERE logouttime < @CurrentTime
+                                            SET session_active = false 
+                                            WHERE logout_time < @CurrentTime
                                             """, new{CurrentTime = DateTime.UtcNow});
     }
 }
