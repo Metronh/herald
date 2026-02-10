@@ -42,4 +42,6 @@ public class TokenService : ITokenService
         var token = tokenHandler.CreateToken(tokenDescription);
         return tokenHandler.WriteToken(token);
     }
+
+    public DateTime GetSessionExpiryTime() => DateTime.UtcNow.AddMinutes(_jwtInformation.ExpiryTime);
 }

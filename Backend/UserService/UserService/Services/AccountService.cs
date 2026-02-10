@@ -106,7 +106,16 @@ public class AccountService : IAccountService
             return response;
         
         response.Token = _tokenService.GenerateToken(user.Id, user.Email, user.Administrator);
-        await _userRepository.RegisterLogin(user);
+
+        var loginSession = new LoginSessionEntity
+        {
+            LoginSessionId = Guid.NewGuid(),
+            UserId = user.Id,
+            LoginTime = DateTime.UtcNow,
+            LogoutTime = _tokenService.GetSessionExpiryTime(),
+        };
+        
+        await _userRepository.RegisterLogin(loginSession);
         response.Success = true;
 
         _logger.LogInformation("{Class}.{Method} completed at {Time}",

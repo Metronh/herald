@@ -28,7 +28,7 @@ public class UserRepository : IUserRepository
         using var connection = await _connectionFactory.CreateConnectionAsync();
         await connection.ExecuteAsync(
             """
-            INSERT INTO users (id, username, email, first_name, last_name, Administrator, Password) 
+            INSERT INTO users (id, username, email, first_name, last_name, administrator, password) 
             VALUES 
                 (@Id, @Username, @Email, @FirstName, @LastName, @Administrator, @Password)
             """, user
@@ -56,22 +56,15 @@ public class UserRepository : IUserRepository
         return user;
     }
 
-    public async Task RegisterLogin(UserEntity user)
+    public async Task RegisterLogin(LoginSessionEntity loginSession)
     {
         _logger.LogInformation("{Class}.{Method} started at {Time}",
             nameof(UserRepository), nameof(RegisterLogin), DateTime.UtcNow);
-        var loginSessionEntity = new LoginSessionEntity
-        {
-            LoginSessionId = Guid.NewGuid(),
-            LoginTime = DateTime.UtcNow,
-            UserId = user.Id,
-            LogoutTime = DateTime.UtcNow.AddMinutes(_jwtInformation.ExpiryTime)
-        };
         using var connection = await _connectionFactory.CreateConnectionAsync();
         await connection.ExecuteAsync("""
                                             INSERT INTO login_sessions (login_session_id, user_id, login_time, logout_time) 
                                             VALUES (@LoginSessionId, @UserId, @LoginTime, @LogoutTime)
-                                            """, loginSessionEntity);
+                                            """, loginSession);
     }
 
     public async Task SessionCleanUp()
