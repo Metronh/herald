@@ -28,7 +28,7 @@ public class UserRepository : IUserRepository
         using var connection = await _connectionFactory.CreateConnectionAsync();
         await connection.ExecuteAsync(
             """
-            INSERT INTO users (Id, username, email, first_name, last_name, Administrator, Password) 
+            INSERT INTO users (id, username, email, first_name, last_name, Administrator, Password) 
             VALUES 
                 (@Id, @Username, @Email, @FirstName, @LastName, @Administrator, @Password)
             """, user
@@ -47,7 +47,7 @@ public class UserRepository : IUserRepository
 
 
         var user = await connection.QueryFirstOrDefaultAsync<UserEntity>("""
-                                                                         SELECT * FROM Users WHERE username = @Username
+                                                                         SELECT * FROM users WHERE username = @Username
                                                                          """, new { Username = username });
 
 
