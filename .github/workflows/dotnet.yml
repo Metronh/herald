@@ -48,5 +48,8 @@ jobs:
     - name: Test UserService
       run: dotnet test Backend/UserService/UserServiceTests/UserServiceTests.csproj --verbosity normal
 
+    - name: Restore dependencies UserService
+      run: dotnet restore Backend/CommunicationsFunctions/CommunicationsFunctions/CommunicationsFunctions.csproj
+
     - name: Build CommunicationsFunction
       run: dotnet build Backend/CommunicationsFunctions/CommunicationsFunctions/CommunicationsFunctions.csproj --no-restore
