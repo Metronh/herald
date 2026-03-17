@@ -25,6 +25,11 @@ jobs:
                 JwtIssuer: ${{ secrets.JWT_ISSUER }}
                 JwtAudience: ${{ secrets.JWT_AUDIENCE }}
                 JwtExpiryTime: ${{ secrets.JWT_EXPIRY_TIME }}
+                ResendFromAddress: ${{secrets.RESEND_FROM_ADDRESS}}
+                ResendApiKey: ${{secrets.RESEND_API_KEY}}
+                RabbitMQConnectionString: amqp://${{secrets.RABBITMQ_USERNAME}}:${{secrets.RABBITMQ_PASSWORD }}@rabbitmq:5672
+                RabbitMQUsername: ${{secrets.RABBITMQ_USERNAME}}
+                RabbitMQPassword: ${{secrets.RABBITMQ_PASSWORD}}
               with: 
                 compose-file: "compose.yaml"
                 up-flags: "--build"
