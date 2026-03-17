@@ -12,6 +12,7 @@ public static class HealthEndpoints
     private static async Task<Results<Ok,ProblemHttpResult>> HealthEndpoint(ILogger<Program> logger)
     {
         logger.LogInformation("Health endpoint hit at {utcTime}", DateTime.UtcNow);
+        await Task.Delay(TimeSpan.FromSeconds(10));
         logger.LogInformation("Health endpoint completed at {utcTime}", DateTime.UtcNow);
         return TypedResults.Ok();
     }

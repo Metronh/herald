@@ -1,3 +1,4 @@
+using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using OpenTelemetry.Logs;
@@ -8,6 +9,7 @@ using UserService.Entities;
 using UserService.Interfaces.Database;
 using UserService.Interfaces.Repository;
 using UserService.Interfaces.Services;
+using UserService.Messaging.Events;
 using UserService.Middleware;
 using UserService.Repository;
 using UserService.Services;
@@ -26,6 +28,31 @@ public static class ServiceRegistrationExtensions
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddSingleton<IPasswordHasher<UserEntity>, PasswordHasher<UserEntity>>();
         builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+        builder.Services.AddMassTransit(busConfig =>
+        {
+            busConfig.SetKebabCaseEndpointNameFormatter();
+            busConfig.UsingRabbitMq((context, config) =>
+            {
+                config.Host(new Uri(builder.Configuration["MessageBroker:Host"]!), host =>
+                {
+                    host.Username(builder.Configuration["MessageBroker:Username"]!);
+                    host.Password(builder.Configuration["MessageBroker:Password"]!);
+                });
+                config.Message<SendWelcomeEmailEvent>(x =>
+                {
+                    x.SetEntityName("UserService.Messaging.Events:SendWelcomeEmailEvent");
+                });
+                config.Publish<SendWelcomeEmailEvent>(x =>
+                {
+                    x.BindQueue("UserService.Messaging.Events:SendWelcomeEmailEvent", "resend-queue", b =>
+                    {
+                        b.Durable = true;
+                        b.AutoDelete = false;
+                    });
+                });
+                config.ConfigureEndpoints(context);
+            });
+        }); 
     }
 
     public static void AddValidators(this WebApplicationBuilder builder)

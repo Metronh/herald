@@ -1,11 +1,13 @@
-using FluentValidation.Results;
+using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using UserService.Entities;
 using UserService.Interfaces.Repository;
 using UserService.Interfaces.Services;
+using UserService.Messaging.Events;
 using UserService.Models.Request;
 using UserService.Models.Response;
 using UserService.Validation;
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace UserService.Services;
 
@@ -17,10 +19,11 @@ public class AccountService : IAccountService
     private readonly IPasswordHasher<UserEntity> _hasher;
     private readonly LoginRequestValidator _loginRequestValidator;
     private readonly ITokenService _tokenService;
+    private readonly IPublishEndpoint _publishEndpoint;
 
     public AccountService(ILogger<AccountService> logger, CreateUserRequestValidator createUserRequestValidator,
         IUserRepository userRepository, IPasswordHasher<UserEntity> hasher, LoginRequestValidator loginRequestValidator,
-        ITokenService tokenService)
+        ITokenService tokenService, IPublishEndpoint publishEndpoint)
     {
         _logger = logger;
         _createUserRequestValidator = createUserRequestValidator;
@@ -28,6 +31,7 @@ public class AccountService : IAccountService
         _hasher = hasher;
         _loginRequestValidator = loginRequestValidator;
         _tokenService = tokenService;
+        _publishEndpoint = publishEndpoint;
     }
 
     public async Task<CreateUserResponse> CreateUser(CreateUserRequest request, bool isAdministrator = false)
@@ -65,6 +69,14 @@ public class AccountService : IAccountService
         user.Password = _hasher.HashPassword(user, request.Password);
         await _userRepository.CreateUser(user: user);
         response.IsAccountCreated = true;
+
+        await _publishEndpoint.Publish(new SendWelcomeEmailEvent
+        {
+            Email = user.Email,
+            FirstName = user.FirstName,
+            UserId = user.Id
+        });
+        
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
             nameof(AccountService), nameof(CreateUser), DateTime.UtcNow);
         return response;
@@ -100,7 +112,7 @@ public class AccountService : IAccountService
         if (user is null)
             return response;
         
-        var isCorrectPassword = _hasher.VerifyHashedPassword(user: user, user.Password, request.Password);
+        var isCorrectPassword = _hasher.VerifyHashedPassword(user: user, user.Password!, request.Password);
 
         if (isCorrectPassword == PasswordVerificationResult.Failed)
             return response;

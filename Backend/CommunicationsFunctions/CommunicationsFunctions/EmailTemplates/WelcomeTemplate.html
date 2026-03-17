@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Welcome</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0e0c0a;
+            font-family: 'DM Sans', sans-serif;
+            padding: 40px 20px;
+        }
+
+        .email-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #faf8f4;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+        }
+
+        /* Header */
+        .header {
+            background: #1a1612;
+            padding: 52px 56px 44px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -60px; right: -60px;
+            width: 220px; height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #c9a96e22 0%, transparent 70%);
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -40px; left: 30px;
+            width: 140px; height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #c9a96e11 0%, transparent 70%);
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            color: #c9a96e;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 36px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 700;
+            color: #faf8f4;
+            line-height: 1.15;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 em {
+            font-style: italic;
+            color: #c9a96e;
+        }
+
+        .header-rule {
+            width: 48px;
+            height: 2px;
+            background: #c9a96e;
+            margin-top: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Body */
+        .body {
+            padding: 52px 56px;
+        }
+
+        .greeting {
+            font-size: 15px;
+            color: #6b6358;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .body p {
+            font-size: 16px;
+            color: #2c2620;
+            line-height: 1.8;
+            font-weight: 300;
+            margin-bottom: 20px;
+        }
+
+        .body p strong {
+            font-weight: 500;
+            color: #1a1612;
+        }
+
+        /* Feature cards */
+        .features {
+            margin: 36px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            background: #f2ede5;
+            padding: 20px 24px;
+        }
+
+        .feature:first-child { border-radius: 4px 4px 0 0; }
+        .feature:last-child  { border-radius: 0 0 4px 4px; }
+
+        .feature-icon {
+            width: 36px;
+            height: 36px;
+            background: #1a1612;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 16px;
+            margin-top: 2px;
+        }
+
+        .feature-text strong {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a1612;
+            letter-spacing: 0.03em;
+            margin-bottom: 4px;
+        }
+
+        .feature-text span {
+            font-size: 13px;
+            color: #6b6358;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+
+        /* CTA */
+        .cta-wrap {
+            margin: 36px 0 28px;
+            text-align: center;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background: #1a1612;
+            color: #faf8f4;
+            text-decoration: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            padding: 18px 44px;
+            border-radius: 2px;
+            transition: background 0.2s;
+        }
+
+        .cta-btn:hover {
+            background: #c9a96e;
+        }
+
+        .cta-sub {
+            display: block;
+            margin-top: 14px;
+            font-size: 12px;
+            color: #a09488;
+            font-weight: 300;
+        }
+
+        /* Divider */
+        .divider {
+            border: none;
+            border-top: 1px solid #e8e1d6;
+            margin: 8px 0 28px;
+        }
+
+        .sign-off {
+            font-size: 15px;
+            color: #2c2620;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .sign-off strong {
+            display: block;
+            margin-top: 20px;
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1612;
+        }
+
+        .sign-off .title {
+            font-size: 12px;
+            color: #a09488;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1612;
+            padding: 28px 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .footer-logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 14px;
+            color: #c9a96e;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            font-size: 11px;
+            color: #6b6358;
+            text-decoration: none;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        .footer-links a:hover {
+            color: #c9a96e;
+        }
+
+        .footer-legal {
+            width: 100%;
+            font-size: 10px;
+            color: #3d3730;
+            font-weight: 300;
+            line-height: 1.6;
+            border-top: 1px solid #2a2520;
+            padding-top: 18px;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 540px) {
+            .header, .body { padding: 36px 28px; }
+            .footer { padding: 24px 28px; }
+            .header h1 { font-size: 32px; }
+            .footer { flex-direction: column; align-items: flex-start; gap: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="email-wrapper">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="logo">Herald</div>
+        <h1>Welcome to<br>something <em>different.</em></h1>
+        <div class="header-rule"></div>
+    </div>
+
+    <!-- BODY -->
+    <div class="body">
+        <div class="greeting">Hello,</div>
+
+        <p>
+            We're genuinely delighted to have you here. Your account is ready, and you now have full access to everything we've carefully built for you.
+        </p>
+
+        <p>
+            Here's a quick look at what's waiting for you inside — a few highlights to help you hit the ground running:
+        </p>
+
+        <!-- Feature list -->
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">✦</div>
+                <div class="feature-text">
+                    <strong>Your personal dashboard</strong>
+                    <span>Everything in one place — manage, track, and customize your experience from a single, clean view.</span>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">◈</div>
+                <div class="feature-text">
+                    <strong>Curated for you</strong>
+                    <span>We've pre-loaded recommendations based on your preferences. Refine them anytime in settings.</span>
+                </div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⬡</div>
+                <div class="feature-text">
+                    <strong>Priority support</strong>
+                    <span>Our team is available 7 days a week. Reach us anytime — we respond within a few hours.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta-wrap">
+            <a href="#" class="cta-btn">Temp button</a>
+            <span class="cta-sub">Takes less than 2 minutes to set up your profile</span>
+        </div>
+
+        <hr class="divider">
+
+        <p class="sign-off">
+            This is a signoff placeholder
+            <strong>— Metronh</strong>
+            <span class="title">Founder &amp; CEO, Maison Co.</span>
+        </p>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+        <div class="footer-logo">Maison · Co.</div>
+        <div class="footer-links">
+            <a href="#">Unsubscribe</a>
+            <a href="#">Privacy</a>
+            <a href="#">Help</a>
+        </div>
+        <div class="footer-legal">
+            This is the legal placeholder
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
