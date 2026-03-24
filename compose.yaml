@@ -157,7 +157,7 @@ services:
       rabbitmq:
         condition: service_healthy   
     environment:
-      - AzureWebJobsStorage=UseDevelopmentStorage=true
+      - AzureWebJobsStorage=none
       - ConnectionStrings__PostgresDb=${PostgresConnectionString}
       - ResendSettings__FromAddress=${ResendFromAddress}
       - ResendSettings__ApiKey=${ResendApiKey}
