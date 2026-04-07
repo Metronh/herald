@@ -7,5 +7,5 @@ public interface IAccountService
 {
     public Task<CreateUserResponse> CreateUser(CreateUserRequest request, bool isAdministrator = false);
     public Task<LoginResponse> Login(LoginRequest request);
-    public Task<DeactivateAccountRespones> DeactivateAccount(DeactivateAccountRequest request);
+    public Task<DeactivateAccountResponse> DeactivateAccount(DeactivateAccountRequest request);
 }
