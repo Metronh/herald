@@ -1,11 +1,7 @@
-using Microsoft.AspNetCore.Identity;
-using UserService.Database;
+using UserService.AppSettings;
 using UserService.Endpoints;
-using UserService.Entities;
 using UserService.Extensions;
-using UserService.Interfaces.Database;
-using UserService.Interfaces.Repository;
-using UserService.Repository;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +13,9 @@ builder.AddSwagger();
 builder.AddAppSettings();
 builder.AddValidators();
 builder.AddServices();
+builder.RegisterAuthorization(builder.Configuration.GetSection("JwtTokenInformation").Get<JwtInformation>());
+
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
 var app = builder.Build();
 app.UseCustomExceptionHandling();

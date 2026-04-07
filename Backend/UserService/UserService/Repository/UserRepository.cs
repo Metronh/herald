@@ -1,6 +1,4 @@
 using Dapper;
-using Microsoft.Extensions.Options;
-using UserService.AppSettings;
 using UserService.Entities;
 using UserService.Interfaces.Database;
 using UserService.Interfaces.Repository;
@@ -11,14 +9,11 @@ public class UserRepository : IUserRepository
 {
     private readonly IDbConnectionFactory _connectionFactory;
     private readonly ILogger<UserRepository> _logger;
-    private readonly JwtInformation _jwtInformation;
-
-    public UserRepository(IDbConnectionFactory connectionFactory, ILogger<UserRepository> logger,
-        JwtInformation jwtInformation)
+    
+    public UserRepository(IDbConnectionFactory connectionFactory, ILogger<UserRepository> logger)
     {
         _connectionFactory = connectionFactory;
         _logger = logger;
-        _jwtInformation = jwtInformation;
     }
 
     public async Task CreateUser(UserEntity user)
@@ -38,10 +33,10 @@ public class UserRepository : IUserRepository
             nameof(UserRepository), nameof(CreateUser), DateTime.UtcNow);
     }
 
-    public async Task<UserEntity?> GetUserLoginDetails(string username)
+    public async Task<UserEntity?> GetUserLoginDetailsByUsername(string username)
     {
         _logger.LogInformation("{Class}.{Method} started at {Time}",
-            nameof(UserRepository), nameof(GetUserLoginDetails), DateTime.UtcNow);
+            nameof(UserRepository), nameof(GetUserLoginDetailsByUsername), DateTime.UtcNow);
 
         using var connection = await _connectionFactory.CreateConnectionAsync();
 
@@ -52,7 +47,7 @@ public class UserRepository : IUserRepository
 
 
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
-            nameof(UserRepository), nameof(GetUserLoginDetails), DateTime.UtcNow);
+            nameof(UserRepository), nameof(GetUserLoginDetailsByUsername), DateTime.UtcNow);
         return user;
     }
 
@@ -67,6 +62,30 @@ public class UserRepository : IUserRepository
                                             """, loginSession);
     }
 
+    public async Task UpdateLoginAttempts(UserEntity userEntity)
+    {
+        _logger.LogInformation("{Class}.{Method} started at {Time}",
+            nameof(UserRepository), nameof(UpdateLoginAttempts), DateTime.UtcNow);
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+        await connection.ExecuteAsync("""
+                                      UPDATE users 
+                                      SET failed_login_attempts = @FailedLoginAttempts
+                                      WHERE id = @Id
+                                      """, userEntity);
+    }
+
+    public async Task LockAccount(UserEntity userEntity)
+    {
+        _logger.LogInformation("{Class}.{Method} started at {Time}",
+            nameof(UserRepository), nameof(LockAccount), DateTime.UtcNow);
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+        await connection.ExecuteAsync("""
+                                      UPDATE users
+                                      SET locked_out = true
+                                      WHERE id = @Id
+                                      """,  userEntity);
+    }
+
     public async Task SessionCleanUp()
     {
         _logger.LogInformation("{Class}.{Method} started at {Time}",
@@ -76,6 +95,18 @@ public class UserRepository : IUserRepository
                                             UPDATE login_sessions 
                                             SET session_active = false 
                                             WHERE logout_time < @CurrentTime
-                                            """, new{CurrentTime = DateTime.UtcNow});
+                                            """, new {CurrentTime = DateTime.UtcNow});
+    }
+
+    public async Task DeactivateAccount(UserEntity userEntity)
+    {
+        _logger.LogInformation("{Class}.{Method} started at {Time}",
+            nameof(UserRepository), nameof(DeactivateAccount), DateTime.UtcNow);
+        using var connection = await _connectionFactory.CreateConnectionAsync();
+        await connection.ExecuteAsync("""
+                                      UPDATE users
+                                      SET is_active = false
+                                      WHERE id = @Id
+                                      """, userEntity);
     }
 }

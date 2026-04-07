@@ -7,6 +7,8 @@ CREATE TABLE users (
     administrator BOOLEAN NOT NULL DEFAULT FALSE,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,
     password VARCHAR(200) NOT NULL,
+    failed_login_attempts INT NOT NULL DEFAULT 0,
+    locked_out BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -35,4 +37,6 @@ CREATE TABLE communications(
 );
 
 CREATE INDEX idx_login_sessions_logout ON login_sessions(logout_time);
+CREATE INDEX idx_login_sessions_user ON login_sessions(user_id);
 CREATE INDEX idx_communications_status ON communications(status);
+CREATE INDEX idx_communications_user ON communications(user_id);
