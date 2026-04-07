@@ -12,6 +12,7 @@ public static class UserEndpoints
         app.MapPost("/CreateUser", CreateUser);
         app.MapPost("/CreateUser/Administrator", CreateAdministratorUser);
         app.MapPost("/Login", Login);
+        app.MapPatch("/DeactivateAccount", DeactivateAccount).RequireAuthorization();
     }
 
     private static async Task<Results<Ok<CreateUserResponse>, ProblemHttpResult>> CreateUser(CreateUserRequest request,
@@ -32,7 +33,7 @@ public static class UserEndpoints
     }
 
     private static async Task<Results<Ok<LoginResponse>, ProblemHttpResult>> Login(LoginRequest request,
-        HttpContext httpContext, ILogger<Program> logger,ITokenService tokenService, IAccountService accountService)
+        HttpContext httpContext, ILogger<Program> logger, IAccountService accountService)
     {
         logger.LogInformation("/Login endpoint hit at {utcTime}", DateTime.UtcNow);
 
@@ -40,5 +41,16 @@ public static class UserEndpoints
         
         logger.LogInformation("/Login endpoint completed at {utcTime}", DateTime.UtcNow);
         return TypedResults.Ok(loginResponse);
+    }
+    
+    private static async Task<Results<Ok<DeactivateAccountRespones>, ProblemHttpResult>> DeactivateAccount(DeactivateAccountRequest request,
+        HttpContext httpContext, ILogger<Program> logger, IAccountService accountService)
+    {
+        logger.LogInformation("/DeactivateAccount endpoint hit at {utcTime}", DateTime.UtcNow);
+
+        var deactivateAccountResponse = await accountService.DeactivateAccount(request);
+        
+        logger.LogInformation("/DeactivateAccount endpoint completed at {utcTime}", DateTime.UtcNow);
+        return TypedResults.Ok(deactivateAccountResponse);
     }
 }

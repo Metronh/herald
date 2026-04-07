@@ -9,5 +9,7 @@ public class UserEntity
     public required string LastName { get; init; }
     public required bool Administrator { get; init; }
     public string? Password { get; set; }
-    public required DateOnly CreatedAt { get; init; }
+    public int FailedLoginAttempts { get; set; }
+    public bool LockedOut { get; set; }
+    public required DateTime CreatedAt { get; init; }
 }

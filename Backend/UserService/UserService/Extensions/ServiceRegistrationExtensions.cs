@@ -1,6 +1,9 @@
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Resources;
 using UserService.AppSettings;
@@ -59,12 +62,38 @@ public static class ServiceRegistrationExtensions
     {
         builder.Services.AddScoped<CreateUserRequestValidator>();
         builder.Services.AddScoped<LoginRequestValidator>();
+        builder.Services.AddScoped<DeactivateAccountRequestValidator>();
     }
 
     public static void AddSwagger(this WebApplicationBuilder builder)
     {
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(opt =>
+        {
+            opt.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Enter token here",
+                Name = "Auth",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "bearer"
+            });
+            opt.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] { }
+                }
+            });
+        });
     }
 
     public static void AddAppSettings(this WebApplicationBuilder builder)
@@ -95,6 +124,28 @@ public static class ServiceRegistrationExtensions
             opt.IncludeScopes = true;
             opt.IncludeFormattedMessage = true;
             opt.AddConsoleExporter();
+        });
+    }
+    
+    public static void RegisterAuthorization(this WebApplicationBuilder builder, JwtInformation jwtInfo)
+    {
+        builder.Services.AddAuthorization(opt =>
+        {
+            opt.AddPolicy("Admin", policy => { policy.RequireRole("Admin"); });
+        });
+        builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
+        {
+            opt.TokenValidationParameters = new TokenValidationParameters
+            {
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(jwtInfo.TokenKey)),
+                ValidIssuer = jwtInfo.Issuer,
+                ValidAudience = jwtInfo.Audience,
+                ValidateIssuerSigningKey = true,
+                ValidateLifetime = true,
+                ValidateIssuer = true,
+                ValidateAudience = true,
+            };
         });
     }
 }

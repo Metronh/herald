@@ -18,12 +18,13 @@ public class AccountService : IAccountService
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher<UserEntity> _hasher;
     private readonly LoginRequestValidator _loginRequestValidator;
+    private readonly DeactivateAccountRequestValidator _deactivateAccountRequestValidator;
     private readonly ITokenService _tokenService;
     private readonly IPublishEndpoint _publishEndpoint;
 
     public AccountService(ILogger<AccountService> logger, CreateUserRequestValidator createUserRequestValidator,
         IUserRepository userRepository, IPasswordHasher<UserEntity> hasher, LoginRequestValidator loginRequestValidator,
-        ITokenService tokenService, IPublishEndpoint publishEndpoint)
+        ITokenService tokenService, IPublishEndpoint publishEndpoint, DeactivateAccountRequestValidator deactivateAccountRequestValidator)
     {
         _logger = logger;
         _createUserRequestValidator = createUserRequestValidator;
@@ -32,6 +33,7 @@ public class AccountService : IAccountService
         _loginRequestValidator = loginRequestValidator;
         _tokenService = tokenService;
         _publishEndpoint = publishEndpoint;
+        _deactivateAccountRequestValidator = deactivateAccountRequestValidator;
     }
 
     public async Task<CreateUserResponse> CreateUser(CreateUserRequest request, bool isAdministrator = false)
@@ -41,6 +43,7 @@ public class AccountService : IAccountService
         var response = new CreateUserResponse
         {
             IsAccountCreated = false,
+            IsAdministratorAccount = isAdministrator,
         };
         ValidationResult validationResult = await _createUserRequestValidator.ValidateAsync(request);
         if (!validationResult.IsValid)
@@ -63,7 +66,7 @@ public class AccountService : IAccountService
             FirstName = request.FirstName,
             LastName = request.LastName,
             Administrator = isAdministrator,
-            CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow),
+            CreatedAt = DateTime.UtcNow,
         };
 
         user.Password = _hasher.HashPassword(user, request.Password);
@@ -76,7 +79,7 @@ public class AccountService : IAccountService
             FirstName = user.FirstName,
             UserId = user.Id
         });
-        
+
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
             nameof(AccountService), nameof(CreateUser), DateTime.UtcNow);
         return response;
@@ -107,16 +110,32 @@ public class AccountService : IAccountService
             return response;
         }
 
-        var user = await _userRepository.GetUserLoginDetails(request.Username);
+        var user = await _userRepository.GetUserLoginDetailsByUsername(request.Username);
 
         if (user is null)
             return response;
-        
+
+        if (user.LockedOut)
+        {
+            response.AccountLocked = user.LockedOut;
+            return response;
+        }
+
         var isCorrectPassword = _hasher.VerifyHashedPassword(user: user, user.Password!, request.Password);
 
         if (isCorrectPassword == PasswordVerificationResult.Failed)
+        {
+            user.FailedLoginAttempts++;
+            await _userRepository.UpdateLoginAttempts(user);
+            if (user.FailedLoginAttempts == 3)
+            {
+                await _userRepository.LockAccount(user);
+                response.AccountLocked = true;
+            }
+
             return response;
-        
+        }
+
         response.Token = _tokenService.GenerateToken(user.Id, user.Email, user.Administrator);
 
         var loginSession = new LoginSessionEntity
@@ -126,12 +145,55 @@ public class AccountService : IAccountService
             LoginTime = DateTime.UtcNow,
             LogoutTime = _tokenService.GetSessionExpiryTime(),
         };
-        
+
         await _userRepository.RegisterLogin(loginSession);
+        if (user.FailedLoginAttempts != 0)
+        {
+            user.FailedLoginAttempts = 0;
+            await _userRepository.UpdateLoginAttempts(user);
+        }
         response.Success = true;
 
         _logger.LogInformation("{Class}.{Method} completed at {Time}",
             nameof(AccountService), nameof(Login), DateTime.UtcNow);
+        return response;
+    }
+
+    public async Task<DeactivateAccountRespones> DeactivateAccount(DeactivateAccountRequest request)
+    {
+        _logger.LogInformation("{Class}.{Method} started at {Time}",
+            nameof(AccountService), nameof(DeactivateAccount), DateTime.UtcNow);
+        var response = new DeactivateAccountRespones
+        {
+            Success = false,
+            ValidationFailures = new List<ValidationFailureResponse>()
+        };
+
+        var validationResult = await _deactivateAccountRequestValidator.ValidateAsync(request);
+
+        if (!validationResult.IsValid)
+        {
+            response.ValidationFailures = validationResult.Errors.Select(e => new ValidationFailureResponse
+            {
+                Property = e.PropertyName,
+                ErrorMessage = e.ErrorMessage,
+            }).ToList();
+            return response;
+        }
+
+        var user = await _userRepository.GetUserLoginDetailsByUsername(request.Username);
+        
+        if (user is null)
+            return response;
+
+        var isCorrectPassword = _hasher.VerifyHashedPassword(user: user, user.Password!, request.Password);
+
+        if (isCorrectPassword == PasswordVerificationResult.Failed)
+            return response;
+
+        await _userRepository.DeactivateAccount(user);
+
+        response.Success = true;
         return response;
     }
 }

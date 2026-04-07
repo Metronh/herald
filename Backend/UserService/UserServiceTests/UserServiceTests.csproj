@@ -25,8 +25,4 @@
       <ProjectReference Include="..\UserService\UserService.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="ServicesTests\" />
-    </ItemGroup>
-
 </Project>
