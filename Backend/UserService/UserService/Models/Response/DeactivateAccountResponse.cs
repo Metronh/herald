@@ -1,6 +1,6 @@
 namespace UserService.Models.Response;
 
-public class DeactivateAccountRespones : BaseResponse
+public class DeactivateAccountResponse : BaseResponse
 {
     public bool Success { get; set; }
 }

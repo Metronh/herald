@@ -43,7 +43,7 @@ public static class UserEndpoints
         return TypedResults.Ok(loginResponse);
     }
     
-    private static async Task<Results<Ok<DeactivateAccountRespones>, ProblemHttpResult>> DeactivateAccount(DeactivateAccountRequest request,
+    private static async Task<Results<Ok<DeactivateAccountResponse>, ProblemHttpResult>> DeactivateAccount(DeactivateAccountRequest request,
         HttpContext httpContext, ILogger<Program> logger, IAccountService accountService)
     {
         logger.LogInformation("/DeactivateAccount endpoint hit at {utcTime}", DateTime.UtcNow);

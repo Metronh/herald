@@ -159,11 +159,11 @@ public class AccountService : IAccountService
         return response;
     }
 
-    public async Task<DeactivateAccountRespones> DeactivateAccount(DeactivateAccountRequest request)
+    public async Task<DeactivateAccountResponse> DeactivateAccount(DeactivateAccountRequest request)
     {
         _logger.LogInformation("{Class}.{Method} started at {Time}",
             nameof(AccountService), nameof(DeactivateAccount), DateTime.UtcNow);
-        var response = new DeactivateAccountRespones
+        var response = new DeactivateAccountResponse
         {
             Success = false,
             ValidationFailures = new List<ValidationFailureResponse>()
